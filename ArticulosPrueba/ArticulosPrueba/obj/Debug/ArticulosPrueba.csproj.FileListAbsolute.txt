@@ -1,0 +1,18 @@
+C:\Users\Maxi\AppData\Local\Temporary Projects\ArticulosPrueba\bin\Debug\ArticulosPrueba.exe.config
+C:\Users\Maxi\Documents\Visual Studio 2012\Projects\ArticulosPrueba\ArticulosPrueba\bin\Debug\ArticulosPrueba.exe
+C:\Users\Maxi\Documents\Visual Studio 2012\Projects\ArticulosPrueba\ArticulosPrueba\bin\Debug\ArticulosPrueba.pdb
+C:\Users\Maxi\Documents\Visual Studio 2012\Projects\ArticulosPrueba\ArticulosPrueba\bin\Debug\Datos.dll
+C:\Users\Maxi\Documents\Visual Studio 2012\Projects\ArticulosPrueba\ArticulosPrueba\bin\Debug\EntityFramework.dll
+C:\Users\Maxi\Documents\Visual Studio 2012\Projects\ArticulosPrueba\ArticulosPrueba\bin\Debug\Datos.pdb
+C:\Users\Maxi\Documents\Visual Studio 2012\Projects\ArticulosPrueba\ArticulosPrueba\bin\Debug\EntityFramework.xml
+C:\Users\Maxi\Documents\Visual Studio 2012\Projects\ArticulosPrueba\ArticulosPrueba\obj\Debug\ArticulosPrueba.csprojResolveAssemblyReference.cache
+C:\Users\Maxi\Documents\Visual Studio 2012\Projects\ArticulosPrueba\ArticulosPrueba\obj\Debug\ArticulosPrueba.frmArticulos.resources
+C:\Users\Maxi\Documents\Visual Studio 2012\Projects\ArticulosPrueba\ArticulosPrueba\obj\Debug\ArticulosPrueba.Properties.Resources.resources
+C:\Users\Maxi\Documents\Visual Studio 2012\Projects\ArticulosPrueba\ArticulosPrueba\obj\Debug\ArticulosPrueba.csproj.GenerateResource.Cache
+C:\Users\Maxi\Documents\Visual Studio 2012\Projects\ArticulosPrueba\ArticulosPrueba\obj\Debug\ArticulosPrueba.exe
+C:\Users\Maxi\Documents\Visual Studio 2012\Projects\ArticulosPrueba\ArticulosPrueba\obj\Debug\ArticulosPrueba.pdb
+C:\Users\Maxi\Documents\Visual Studio 2012\Projects\ArticulosPrueba\ArticulosPrueba\bin\Debug\ArticulosPrueba.exe.config
+C:\Users\Maxi\Documents\Visual Studio 2012\Projects\ArticulosPrueba\ArticulosPrueba\obj\Debug\ArticulosPrueba.frmConsArtDATAGRID.resources
+C:\Users\Maxi\Documents\Visual Studio 2012\Projects\ArticulosPrueba\ArticulosPrueba\obj\Debug\ArticulosPrueba.frmMenu.resources
+C:\Users\Maxi\Documents\Visual Studio 2012\Projects\ArticulosPrueba\ArticulosPrueba\obj\Debug\ArticulosPrueba.frmConsArtLISTVIEW.resources
+C:\Users\Maxi\Documents\Visual Studio 2012\Projects\ArticulosPrueba\ArticulosPrueba\obj\Debug\ArticulosPrueba.frmTabControl.resources

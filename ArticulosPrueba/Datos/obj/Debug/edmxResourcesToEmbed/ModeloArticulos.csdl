@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="ArticulosPruebaModel" Alias="Self" p1:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:p1="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityContainer Name="ArticulosPruebaEntities" p1:LazyLoadingEnabled="true">
+    <EntitySet Name="Articulos" EntityType="ArticulosPruebaModel.Articulos" />
+    <EntitySet Name="UnidadesMedida" EntityType="ArticulosPruebaModel.UnidadesMedida" />
+    <AssociationSet Name="FK_Articulos_UnidadesMedida" Association="ArticulosPruebaModel.FK_Articulos_UnidadesMedida">
+      <End Role="UnidadesMedida" EntitySet="UnidadesMedida" />
+      <End Role="Articulos" EntitySet="Articulos" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="Articulos">
+    <Key>
+      <PropertyRef Name="IdArt" />
+    </Key>
+    <Property Type="Int32" Name="IdArt" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Type="String" Name="Descripcion" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Type="Decimal" Name="Precio" Nullable="false" Precision="10" Scale="2" />
+    <Property Type="Int32" Name="Cantidad" Nullable="false" />
+    <Property Type="String" Name="Rubro" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Type="DateTime" Name="FechaAlta" Nullable="false" Precision="3" />
+    <Property Type="Int16" Name="IdUnidadMedida" Nullable="false" />
+    <Property Type="DateTime" Name="FechaBaja" Precision="3" />
+    <NavigationProperty Name="UnidadesMedida" Relationship="ArticulosPruebaModel.FK_Articulos_UnidadesMedida" FromRole="Articulos" ToRole="UnidadesMedida" />
+  </EntityType>
+  <EntityType Name="UnidadesMedida">
+    <Key>
+      <PropertyRef Name="IdUnidadMedida" />
+    </Key>
+    <Property Type="Int16" Name="IdUnidadMedida" Nullable="false" />
+    <Property Type="String" Name="Descripcion" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="Articulos" Relationship="ArticulosPruebaModel.FK_Articulos_UnidadesMedida" FromRole="UnidadesMedida" ToRole="Articulos" />
+  </EntityType>
+  <Association Name="FK_Articulos_UnidadesMedida">
+    <End Type="ArticulosPruebaModel.UnidadesMedida" Role="UnidadesMedida" Multiplicity="1" />
+    <End Type="ArticulosPruebaModel.Articulos" Role="Articulos" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="UnidadesMedida">
+        <PropertyRef Name="IdUnidadMedida" />
+      </Principal>
+      <Dependent Role="Articulos">
+        <PropertyRef Name="IdUnidadMedida" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema>
