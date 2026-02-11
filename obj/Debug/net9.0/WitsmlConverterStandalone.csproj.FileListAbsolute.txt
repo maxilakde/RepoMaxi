@@ -1,0 +1,15 @@
+C:\TFS-CABL\BochazoEtpWitsml\bin\Debug\net9.0\WitsmlConverterStandalone.exe
+C:\TFS-CABL\BochazoEtpWitsml\bin\Debug\net9.0\WitsmlConverterStandalone.dll.config
+C:\TFS-CABL\BochazoEtpWitsml\bin\Debug\net9.0\WitsmlConverterStandalone.deps.json
+C:\TFS-CABL\BochazoEtpWitsml\bin\Debug\net9.0\WitsmlConverterStandalone.runtimeconfig.json
+C:\TFS-CABL\BochazoEtpWitsml\bin\Debug\net9.0\WitsmlConverterStandalone.dll
+C:\TFS-CABL\BochazoEtpWitsml\bin\Debug\net9.0\WitsmlConverterStandalone.pdb
+C:\TFS-CABL\BochazoEtpWitsml\obj\Debug\net9.0\WitsmlConverterStandalone.GeneratedMSBuildEditorConfig.editorconfig
+C:\TFS-CABL\BochazoEtpWitsml\obj\Debug\net9.0\WitsmlConverterStandalone.AssemblyInfoInputs.cache
+C:\TFS-CABL\BochazoEtpWitsml\obj\Debug\net9.0\WitsmlConverterStandalone.AssemblyInfo.cs
+C:\TFS-CABL\BochazoEtpWitsml\obj\Debug\net9.0\WitsmlConverterStandalone.csproj.CoreCompileInputs.cache
+C:\TFS-CABL\BochazoEtpWitsml\obj\Debug\net9.0\WitsmlConverterStandalone.dll
+C:\TFS-CABL\BochazoEtpWitsml\obj\Debug\net9.0\refint\WitsmlConverterStandalone.dll
+C:\TFS-CABL\BochazoEtpWitsml\obj\Debug\net9.0\WitsmlConverterStandalone.pdb
+C:\TFS-CABL\BochazoEtpWitsml\obj\Debug\net9.0\WitsmlConverterStandalone.genruntimeconfig.cache
+C:\TFS-CABL\BochazoEtpWitsml\obj\Debug\net9.0\ref\WitsmlConverterStandalone.dll
