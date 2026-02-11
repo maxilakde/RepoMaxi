@@ -1,0 +1,144 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="ArticulosPruebaModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityContainer Name="ArticulosPruebaModelStoreContainer">
+          <EntitySet Name="Articulos" EntityType="ArticulosPruebaModel.Store.Articulos" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="UnidadesMedida" EntityType="ArticulosPruebaModel.Store.UnidadesMedida" store:Type="Tables" Schema="dbo" />
+          <AssociationSet Name="FK_Articulos_UnidadesMedida" Association="ArticulosPruebaModel.Store.FK_Articulos_UnidadesMedida">
+            <End Role="UnidadesMedida" EntitySet="UnidadesMedida" />
+            <End Role="Articulos" EntitySet="Articulos" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Articulos">
+          <Key>
+            <PropertyRef Name="IdArt" />
+          </Key>
+          <Property Name="IdArt" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Descripcion" Type="nvarchar" Nullable="false" MaxLength="200" />
+          <Property Name="Precio" Type="decimal" Nullable="false" Precision="10" Scale="2" />
+          <Property Name="Cantidad" Type="int" Nullable="false" />
+          <Property Name="Rubro" Type="nvarchar" Nullable="false" MaxLength="100" />
+          <Property Name="FechaAlta" Type="datetime" Nullable="false" />
+          <Property Name="IdUnidadMedida" Type="smallint" Nullable="false" />
+          <Property Name="FechaBaja" Type="datetime" />
+        </EntityType>
+        <EntityType Name="UnidadesMedida">
+          <Key>
+            <PropertyRef Name="IdUnidadMedida" />
+          </Key>
+          <Property Name="IdUnidadMedida" Type="smallint" Nullable="false" />
+          <Property Name="Descripcion" Type="nvarchar" Nullable="false" MaxLength="100" />
+        </EntityType>
+        <Association Name="FK_Articulos_UnidadesMedida">
+          <End Role="UnidadesMedida" Type="ArticulosPruebaModel.Store.UnidadesMedida" Multiplicity="1" />
+          <End Role="Articulos" Type="ArticulosPruebaModel.Store.Articulos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UnidadesMedida">
+              <PropertyRef Name="IdUnidadMedida" />
+            </Principal>
+            <Dependent Role="Articulos">
+              <PropertyRef Name="IdUnidadMedida" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="ArticulosPruebaModel" Alias="Self" p1:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:p1="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="ArticulosPruebaEntities" p1:LazyLoadingEnabled="true">
+          <EntitySet Name="Articulos" EntityType="ArticulosPruebaModel.Articulos" />
+          <EntitySet Name="UnidadesMedida" EntityType="ArticulosPruebaModel.UnidadesMedida" />
+          <AssociationSet Name="FK_Articulos_UnidadesMedida" Association="ArticulosPruebaModel.FK_Articulos_UnidadesMedida">
+            <End Role="UnidadesMedida" EntitySet="UnidadesMedida" />
+            <End Role="Articulos" EntitySet="Articulos" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Articulos">
+          <Key>
+            <PropertyRef Name="IdArt" />
+          </Key>
+          <Property Type="Int32" Name="IdArt" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="Descripcion" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Type="Decimal" Name="Precio" Nullable="false" Precision="10" Scale="2" />
+          <Property Type="Int32" Name="Cantidad" Nullable="false" />
+          <Property Type="String" Name="Rubro" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Type="DateTime" Name="FechaAlta" Nullable="false" Precision="3" />
+          <Property Type="Int16" Name="IdUnidadMedida" Nullable="false" />
+          <Property Type="DateTime" Name="FechaBaja" Precision="3" />
+          <NavigationProperty Name="UnidadesMedida" Relationship="ArticulosPruebaModel.FK_Articulos_UnidadesMedida" FromRole="Articulos" ToRole="UnidadesMedida" />
+        </EntityType>
+        <EntityType Name="UnidadesMedida">
+          <Key>
+            <PropertyRef Name="IdUnidadMedida" />
+          </Key>
+          <Property Type="Int16" Name="IdUnidadMedida" Nullable="false" />
+          <Property Type="String" Name="Descripcion" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Articulos" Relationship="ArticulosPruebaModel.FK_Articulos_UnidadesMedida" FromRole="UnidadesMedida" ToRole="Articulos" />
+        </EntityType>
+        <Association Name="FK_Articulos_UnidadesMedida">
+          <End Type="ArticulosPruebaModel.UnidadesMedida" Role="UnidadesMedida" Multiplicity="1" />
+          <End Type="ArticulosPruebaModel.Articulos" Role="Articulos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UnidadesMedida">
+              <PropertyRef Name="IdUnidadMedida" />
+            </Principal>
+            <Dependent Role="Articulos">
+              <PropertyRef Name="IdUnidadMedida" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="ArticulosPruebaModelStoreContainer" CdmEntityContainer="ArticulosPruebaEntities">
+          <EntitySetMapping Name="Articulos">
+            <EntityTypeMapping TypeName="ArticulosPruebaModel.Articulos">
+              <MappingFragment StoreEntitySet="Articulos">
+                <ScalarProperty Name="FechaBaja" ColumnName="FechaBaja" />
+                <ScalarProperty Name="IdUnidadMedida" ColumnName="IdUnidadMedida" />
+                <ScalarProperty Name="FechaAlta" ColumnName="FechaAlta" />
+                <ScalarProperty Name="Rubro" ColumnName="Rubro" />
+                <ScalarProperty Name="Cantidad" ColumnName="Cantidad" />
+                <ScalarProperty Name="Precio" ColumnName="Precio" />
+                <ScalarProperty Name="Descripcion" ColumnName="Descripcion" />
+                <ScalarProperty Name="IdArt" ColumnName="IdArt" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UnidadesMedida">
+            <EntityTypeMapping TypeName="ArticulosPruebaModel.UnidadesMedida">
+              <MappingFragment StoreEntitySet="UnidadesMedida">
+                <ScalarProperty Name="Descripcion" ColumnName="Descripcion" />
+                <ScalarProperty Name="IdUnidadMedida" ColumnName="IdUnidadMedida" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="False" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="True" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Ninguno" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

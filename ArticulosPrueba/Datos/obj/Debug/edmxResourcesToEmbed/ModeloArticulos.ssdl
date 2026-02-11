@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="ArticulosPruebaModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityContainer Name="ArticulosPruebaModelStoreContainer">
+    <EntitySet Name="Articulos" EntityType="ArticulosPruebaModel.Store.Articulos" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="UnidadesMedida" EntityType="ArticulosPruebaModel.Store.UnidadesMedida" store:Type="Tables" Schema="dbo" />
+    <AssociationSet Name="FK_Articulos_UnidadesMedida" Association="ArticulosPruebaModel.Store.FK_Articulos_UnidadesMedida">
+      <End Role="UnidadesMedida" EntitySet="UnidadesMedida" />
+      <End Role="Articulos" EntitySet="Articulos" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="Articulos">
+    <Key>
+      <PropertyRef Name="IdArt" />
+    </Key>
+    <Property Name="IdArt" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="Descripcion" Type="nvarchar" Nullable="false" MaxLength="200" />
+    <Property Name="Precio" Type="decimal" Nullable="false" Precision="10" Scale="2" />
+    <Property Name="Cantidad" Type="int" Nullable="false" />
+    <Property Name="Rubro" Type="nvarchar" Nullable="false" MaxLength="100" />
+    <Property Name="FechaAlta" Type="datetime" Nullable="false" />
+    <Property Name="IdUnidadMedida" Type="smallint" Nullable="false" />
+    <Property Name="FechaBaja" Type="datetime" />
+  </EntityType>
+  <EntityType Name="UnidadesMedida">
+    <Key>
+      <PropertyRef Name="IdUnidadMedida" />
+    </Key>
+    <Property Name="IdUnidadMedida" Type="smallint" Nullable="false" />
+    <Property Name="Descripcion" Type="nvarchar" Nullable="false" MaxLength="100" />
+  </EntityType>
+  <Association Name="FK_Articulos_UnidadesMedida">
+    <End Role="UnidadesMedida" Type="ArticulosPruebaModel.Store.UnidadesMedida" Multiplicity="1" />
+    <End Role="Articulos" Type="ArticulosPruebaModel.Store.Articulos" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="UnidadesMedida">
+        <PropertyRef Name="IdUnidadMedida" />
+      </Principal>
+      <Dependent Role="Articulos">
+        <PropertyRef Name="IdUnidadMedida" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema>
