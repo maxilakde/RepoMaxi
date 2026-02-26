@@ -17,7 +17,8 @@ obj/
 *.snupkg
 packages/
 
-# Embedded repository
+# Removed from project
+ArticulosPrueba/
 etp-devkit/
 
 # Windows image file caches

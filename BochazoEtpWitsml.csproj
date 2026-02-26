@@ -8,9 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="etp-devkit\**" />
     <Compile Remove="BochazoEtpWitsml.WinForms\**" />
-    <None Remove="etp-devkit\**" />
     <None Remove="BochazoEtpWitsml.WinForms\**" />
   </ItemGroup>
 
