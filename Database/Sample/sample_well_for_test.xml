@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wells xmlns="http://www.witsml.org/schemas/1series" version="1.4.1.1">
+  <well uid="well-test-001">
+    <name>Pozo Test Adjuntos y Markers</name>
+    <timeZone>-03:00</timeZone>
+    <statusWell>active</statusWell>
+    <commonData>
+      <dTimCreation>2024-02-15T10:00:00Z</dTimCreation>
+      <dTimLastChange>2024-02-27T09:00:00Z</dTimLastChange>
+    </commonData>
+  </well>
+</wells>

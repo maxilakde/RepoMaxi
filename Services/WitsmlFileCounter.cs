@@ -13,6 +13,11 @@ namespace BochazoEtpWitsml.Services
     public class WitsmlFileCounter
     {
         /// <summary>
+        /// Carpeta donde se guardan archivos convertidos de 1.4.1.1 a 2.1. Se excluye del listado para evitar procesar duplicados.
+        /// </summary>
+        public const string ConvertedFolderName = "converted_v2.1";
+
+        /// <summary>
         /// Tipos de objeto WITSML soportados con sus nombres de carpeta asociados.
         /// </summary>
         public static readonly IReadOnlyDictionary<string, string> ObjectTypeToFolder = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
@@ -26,7 +31,14 @@ namespace BochazoEtpWitsml.Services
             { "tubulars", "tubular" },
             { "wbGeometrys", "wbGeometry" },
             { "bhaRuns", "bhaRun" },
-            { "messages", "message" }
+            { "messages", "message" },
+            { "attachments", "attachment" },
+            { "formationMarkers", "formationMarker" },
+            { "trajectoryStations", "trajectoryStation" },
+            { "tubularComponents", "tubularComponent" },
+            { "wbGeometrySections", "wbGeometrySection" },
+            { "geologyIntervals", "geologyInterval" },
+            { "lithologies", "lithology" }
         };
 
         /// <summary>
@@ -43,7 +55,14 @@ namespace BochazoEtpWitsml.Services
             { "tubulars", "Tubulars" },
             { "wbGeometrys", "WB Geometrys" },
             { "bhaRuns", "BHA Runs" },
-            { "messages", "Messages" }
+            { "messages", "Messages" },
+            { "attachments", "Adjuntos" },
+            { "formationMarkers", "Formation Markers" },
+            { "trajectoryStations", "Estaciones de trayectoria" },
+            { "tubularComponents", "Componentes de tubular" },
+            { "wbGeometrySections", "Secciones WB Geometry" },
+            { "geologyIntervals", "Intervalos geológicos" },
+            { "lithologies", "Litologías" }
         };
 
         private readonly string _basePath;
@@ -74,6 +93,9 @@ namespace BochazoEtpWitsml.Services
                 cancellationToken.ThrowIfCancellationRequested();
 
                 var path = file;
+                if (IsUnderConvertedFolder(path))
+                    continue;
+
                 if (folderName == "log")
                 {
                     // Evitar mudLog: buscar "\log\" como segmento completo
@@ -111,6 +133,8 @@ namespace BochazoEtpWitsml.Services
             foreach (var file in files)
             {
                 cancellationToken.ThrowIfCancellationRequested();
+                if (IsUnderConvertedFolder(file))
+                    continue;
 
                 try
                 {
@@ -158,6 +182,9 @@ namespace BochazoEtpWitsml.Services
                 cancellationToken.ThrowIfCancellationRequested();
 
                 var path = file;
+                if (IsUnderConvertedFolder(path))
+                    continue;
+
                 var match = false;
 
                 if (folderName == "log")
@@ -174,6 +201,107 @@ namespace BochazoEtpWitsml.Services
                 if (match)
                     yield return file;
             }
+        }
+
+        private static bool IsUnderConvertedFolder(string filePath)
+        {
+            var parts = filePath.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            return Array.Exists(parts, p => string.Equals(p, ConvertedFolderName, StringComparison.OrdinalIgnoreCase));
+        }
+
+        /// <summary>
+        /// Obtiene archivos que realmente contienen el tipo de objeto (verifica elemento raíz).
+        /// Evita procesar archivos en la carpeta "rig" que tienen root &lt;wells&gt; u otro tipo.
+        /// </summary>
+        public IEnumerable<string> GetFilesForTypeByContent(string objectType, CancellationToken cancellationToken = default)
+        {
+            var expectedRoot = objectType.ToLowerInvariant();
+            foreach (var file in GetFilesForType(objectType, cancellationToken))
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                if (!HasMatchingRoot(file, expectedRoot))
+                    continue;
+                yield return file;
+            }
+        }
+
+        /// <summary>
+        /// Cuenta archivos que realmente contienen el tipo de objeto (por carpeta + contenido).
+        /// </summary>
+        public int CountByContentInFolder(string objectType, CancellationToken cancellationToken = default)
+        {
+            var count = 0;
+            foreach (var _ in GetFilesForTypeByContent(objectType, cancellationToken))
+                count++;
+            return count;
+        }
+
+        private const int VersionCheckChunkSize = 8192;
+
+        /// <summary>
+        /// Desglose de archivos por versión WITSML (1.4.1.1 vs 2.x).
+        /// Lee solo los primeros bytes de cada archivo para no bloquear con logs enormes.
+        /// </summary>
+        public (int Count1411, int Count21) CountByContentWithVersionBreakdown(string objectType, CancellationToken cancellationToken = default)
+        {
+            var expectedRoot = objectType.ToLowerInvariant();
+            if (!ObjectTypeToFolder.ContainsKey(objectType))
+                return (0, 0);
+
+            var count1411 = 0;
+            var count21 = 0;
+
+            foreach (var file in GetFilesForType(objectType, cancellationToken))
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                try
+                {
+                    var chunk = ReadFirstChunk(file, VersionCheckChunkSize);
+                    if (!ContentMatchesRoot(chunk, expectedRoot))
+                        continue;
+                    if (WitsmlConverter.IsWitsml21FromChunk(chunk))
+                        count21++;
+                    else
+                        count1411++;
+                }
+                catch { /* ignorar archivos corruptos */ }
+            }
+
+            return (count1411, count21);
+        }
+
+        private static string ReadFirstChunk(string filePath, int size)
+        {
+            using var reader = File.OpenText(filePath);
+            var buffer = new char[size];
+            var n = reader.Read(buffer, 0, size);
+            return new string(buffer, 0, n);
+        }
+
+        private static bool ContentMatchesRoot(string content, string expectedRoot)
+        {
+            var rootMatch = System.Text.RegularExpressions.Regex.Match(
+                content, @"<(\w+)(?:\s|>)", System.Text.RegularExpressions.RegexOptions.Singleline);
+            if (!rootMatch.Success) return false;
+            var rootLocal = rootMatch.Groups[1].Value.ToLowerInvariant();
+            return rootLocal == expectedRoot || (expectedRoot == "trajectories" && rootLocal == "trajectorys");
+        }
+
+        private static bool HasMatchingRoot(string filePath, string expectedRoot)
+        {
+            try
+            {
+                using var reader = File.OpenText(filePath);
+                var firstChunk = new char[2048];
+                var n = reader.Read(firstChunk, 0, firstChunk.Length);
+                var content = new string(firstChunk, 0, n);
+                var rootMatch = System.Text.RegularExpressions.Regex.Match(
+                    content, @"<(\w+)(?:\s|>)", System.Text.RegularExpressions.RegexOptions.Singleline);
+                if (!rootMatch.Success) return false;
+                var rootLocal = rootMatch.Groups[1].Value.ToLowerInvariant();
+                return rootLocal == expectedRoot || (expectedRoot == "trajectories" && rootLocal == "trajectorys");
+            }
+            catch { return false; }
         }
     }
 }

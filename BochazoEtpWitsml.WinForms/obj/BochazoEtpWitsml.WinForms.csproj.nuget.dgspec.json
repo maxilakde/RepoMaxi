@@ -10,7 +10,7 @@
         "projectUniqueName": "C:\\TFS-CABL\\BochazoEtpWitsml\\BochazoEtpWitsml.csproj",
         "projectName": "BochazoEtpWitsml",
         "projectPath": "C:\\TFS-CABL\\BochazoEtpWitsml\\BochazoEtpWitsml.csproj",
-        "packagesPath": "C:\\Users\\maxim\\AppData\\Local\\Temp\\cursor-sandbox-cache\\0587187297cee20acfc38c7c4e1f9ef9\\nuget",
+        "packagesPath": "C:\\Users\\maxim\\.nuget\\packages\\",
         "outputPath": "C:\\TFS-CABL\\BochazoEtpWitsml\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
@@ -71,7 +71,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.308/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.311/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
@@ -81,7 +81,7 @@
         "projectUniqueName": "C:\\TFS-CABL\\BochazoEtpWitsml\\BochazoEtpWitsml.WinForms\\BochazoEtpWitsml.WinForms.csproj",
         "projectName": "BochazoEtpWitsml.WinForms",
         "projectPath": "C:\\TFS-CABL\\BochazoEtpWitsml\\BochazoEtpWitsml.WinForms\\BochazoEtpWitsml.WinForms.csproj",
-        "packagesPath": "C:\\Users\\maxim\\AppData\\Local\\Temp\\cursor-sandbox-cache\\0587187297cee20acfc38c7c4e1f9ef9\\nuget",
+        "packagesPath": "C:\\Users\\maxim\\.nuget\\packages\\",
         "outputPath": "C:\\TFS-CABL\\BochazoEtpWitsml\\BochazoEtpWitsml.WinForms\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
@@ -143,7 +143,7 @@
               "privateAssets": "none"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.308/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.311/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

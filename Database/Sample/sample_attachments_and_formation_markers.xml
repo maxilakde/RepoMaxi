@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<store xmlns="http://www.witsml.org/schemas/1series" version="1.4.1.1">
+  <attachments>
+    <attachment uid="att-comb-001" uidWell="well-test-001" uidWellbore="wb-test-001">
+      <name>Informe de perforación - Pozo Test</name>
+      <fileName>informe_perforacion.pdf</fileName>
+      <description>Documento de operaciones del pozo de prueba</description>
+      <commonData>
+        <dTimCreation>2024-02-20T10:00:00Z</dTimCreation>
+        <dTimLastChange>2024-02-25T14:30:00Z</dTimLastChange>
+      </commonData>
+    </attachment>
+    <attachment uid="att-comb-002" uidWell="well-test-001" uidWellbore="wb-test-001">
+      <name>Diagrama de casing</name>
+      <fileName>casing_diagram.png</fileName>
+      <description>Esquema de revestimiento</description>
+      <commonData>
+        <dTimCreation>2024-02-21T09:15:00Z</dTimCreation>
+        <dTimLastChange>2024-02-21T09:15:00Z</dTimLastChange>
+      </commonData>
+    </attachment>
+  </attachments>
+  <formationMarkers>
+    <formationMarker uid="fm-comb-001" uidWell="well-test-001" uidWellbore="wb-test-001">
+      <name>Topo Formación A</name>
+      <md uom="m">1250.5</md>
+      <tvd uom="m">1200.2</tvd>
+      <formationLithology>Arena consolidada</formationLithology>
+      <commonData>
+        <dTimCreation>2024-02-18T08:00:00Z</dTimCreation>
+        <dTimLastChange>2024-02-20T11:00:00Z</dTimLastChange>
+      </commonData>
+    </formationMarker>
+    <formationMarker uid="fm-comb-002" uidWell="well-test-001" uidWellbore="wb-test-001">
+      <name>Base Formación B</name>
+      <md uom="m">1580.0</md>
+      <tvd uom="m">1510.3</tvd>
+      <formationLithology>Lutita gris</formationLithology>
+      <commonData>
+        <dTimCreation>2024-02-19T12:30:00Z</dTimCreation>
+        <dTimLastChange>2024-02-19T12:30:00Z</dTimLastChange>
+      </commonData>
+    </formationMarker>
+  </formationMarkers>
+</store>

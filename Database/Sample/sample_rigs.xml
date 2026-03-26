@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rigs xmlns="http://www.witsml.org/schemas/1series" version="1.4.1.1">
+  <rig uid="rig-test-001" uidWell="well-test-001" uidWellbore="wb-test-001">
+    <name>Rig Sedona Alpha</name>
+    <owner>Sedona Drilling</owner>
+    <typeRig>land</typeRig>
+    <commonData>
+      <dTimCreation>2024-02-15T08:00:00Z</dTimCreation>
+      <dTimLastChange>2024-02-25T16:00:00Z</dTimLastChange>
+    </commonData>
+  </rig>
+</rigs>

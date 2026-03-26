@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<attachments xmlns="http://www.witsml.org/schemas/1series" version="1.4.1.1">
+  <attachment uid="att-001" uidWell="well-test-001" uidWellbore="wb-test-001">
+    <name>Informe de perforación - Pozo Test</name>
+    <fileName>informe_perforacion.pdf</fileName>
+    <description>Documento de operaciones del pozo de prueba</description>
+    <commonData>
+      <dTimCreation>2024-02-20T10:00:00Z</dTimCreation>
+      <dTimLastChange>2024-02-25T14:30:00Z</dTimLastChange>
+    </commonData>
+  </attachment>
+  <attachment uid="att-002" uidWell="well-test-001" uidWellbore="wb-test-001">
+    <name>Diagrama de casing</name>
+    <fileName>casing_diagram.png</fileName>
+    <description>Esquema de revestimiento</description>
+    <commonData>
+      <dTimCreation>2024-02-21T09:15:00Z</dTimCreation>
+      <dTimLastChange>2024-02-21T09:15:00Z</dTimLastChange>
+    </commonData>
+  </attachment>
+</attachments>

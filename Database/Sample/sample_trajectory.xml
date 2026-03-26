@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trajectorys xmlns="http://www.witsml.org/schemas/1series" version="1.4.1.1">
+  <trajectory uid="traj-test-001" uidWell="well-test-001" uidWellbore="wb-test-001">
+    <name>Trayectoria Test</name>
+    <mdMn uom="m">0</mdMn>
+    <mdMx uom="m">2500</mdMx>
+    <trajectoryStation uid="stn-001">
+      <typeTrajStation>unknown</typeTrajStation>
+      <md uom="m">0</md>
+      <tvd uom="m">0</tvd>
+      <incl uom="dega">0</incl>
+      <azi uom="dega">0</azi>
+    </trajectoryStation>
+    <trajectoryStation uid="stn-002">
+      <typeTrajStation>unknown</typeTrajStation>
+      <md uom="m">500</md>
+      <tvd uom="m">499.5</tvd>
+      <incl uom="dega">2.1</incl>
+      <azi uom="dega">45</azi>
+    </trajectoryStation>
+    <trajectoryStation uid="stn-003">
+      <typeTrajStation>unknown</typeTrajStation>
+      <md uom="m">1000</md>
+      <tvd uom="m">998.2</tvd>
+      <incl uom="dega">4.5</incl>
+      <azi uom="dega">48</azi>
+    </trajectoryStation>
+    <trajectoryStation uid="stn-004">
+      <typeTrajStation>unknown</typeTrajStation>
+      <md uom="m">1500</md>
+      <tvd uom="m">1495.1</tvd>
+      <incl uom="dega">6.8</incl>
+      <azi uom="dega">52</azi>
+    </trajectoryStation>
+    <trajectoryStation uid="stn-005">
+      <typeTrajStation>unknown</typeTrajStation>
+      <md uom="m">2000</md>
+      <tvd uom="m">1990.3</tvd>
+      <incl uom="dega">8.2</incl>
+      <azi uom="dega">55</azi>
+    </trajectoryStation>
+    <trajectoryStation uid="stn-006">
+      <typeTrajStation>unknown</typeTrajStation>
+      <md uom="m">2500</md>
+      <tvd uom="m">2483.5</tvd>
+      <incl uom="dega">9.5</incl>
+      <azi uom="dega">58</azi>
+    </trajectoryStation>
+  </trajectory>
+</trajectorys>

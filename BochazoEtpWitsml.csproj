@@ -9,7 +9,11 @@
 
   <ItemGroup>
     <Compile Remove="BochazoEtpWitsml.WinForms\**" />
+    <Compile Remove="BochazoEtpWitsml.DataAccess\**" />
+    <Compile Remove="BochazoEtpWitsml.Server\**" />
     <None Remove="BochazoEtpWitsml.WinForms\**" />
+    <None Remove="BochazoEtpWitsml.DataAccess\**" />
+    <None Remove="BochazoEtpWitsml.Server\**" />
   </ItemGroup>
 
   <ItemGroup>

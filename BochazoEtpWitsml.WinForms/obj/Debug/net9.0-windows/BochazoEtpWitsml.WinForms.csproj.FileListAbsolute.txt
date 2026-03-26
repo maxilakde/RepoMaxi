@@ -47,6 +47,7 @@ C:\TFS-CABL\BochazoEtpWitsml\BochazoEtpWitsml.WinForms\obj\Debug\net9.0-windows\
 C:\TFS-CABL\BochazoEtpWitsml\BochazoEtpWitsml.WinForms\obj\Debug\net9.0-windows\BochazoEtpWitsml.WinForms.AssemblyInfoInputs.cache
 C:\TFS-CABL\BochazoEtpWitsml\BochazoEtpWitsml.WinForms\obj\Debug\net9.0-windows\BochazoEtpWitsml.WinForms.AssemblyInfo.cs
 C:\TFS-CABL\BochazoEtpWitsml\BochazoEtpWitsml.WinForms\obj\Debug\net9.0-windows\BochazoEtpWitsml.WinForms.csproj.CoreCompileInputs.cache
+C:\TFS-CABL\BochazoEtpWitsml\BochazoEtpWitsml.WinForms\obj\Debug\net9.0-windows\BochazoEtpWitsml.WinForms.sourcelink.json
 C:\TFS-CABL\BochazoEtpWitsml\BochazoEtpWitsml.WinForms\obj\Debug\net9.0-windows\BochazoE.A8B1F1BC.Up2Date
 C:\TFS-CABL\BochazoEtpWitsml\BochazoEtpWitsml.WinForms\obj\Debug\net9.0-windows\BochazoEtpWitsml.WinForms.dll
 C:\TFS-CABL\BochazoEtpWitsml\BochazoEtpWitsml.WinForms\obj\Debug\net9.0-windows\refint\BochazoEtpWitsml.WinForms.dll

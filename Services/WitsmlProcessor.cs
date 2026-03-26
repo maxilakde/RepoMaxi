@@ -34,6 +34,38 @@ namespace BochazoEtpWitsml.Services
             var ns = root.Name.Namespace;
             var rootName = root.Name.LocalName.ToLower();
 
+            // Archivo compuesto: varios tipos de objetos bajo un root (store/witsmlStore)
+            if (rootName == "store" || rootName == "witsmlstore")
+            {
+                foreach (var child in root.Elements())
+                {
+                    var childName = child.Name.LocalName.ToLower();
+                    switch (childName)
+                    {
+                        case "wells": SaveWells(child, ns, repo, sourceFile); break;
+                        case "wellbores": SaveWellbores(child, ns, repo, sourceFile); break;
+                        case "trajectories":
+                        case "trajectorys": SaveTrajectories(child, ns, repo, sourceFile); break;
+                        case "mudlogs": SaveMudLogs(child, ns, repo, sourceFile); break;
+                        case "logs": SaveLogs(child, ns, repo, sourceFile); break;
+                        case "rigs": SaveRigs(child, ns, repo, sourceFile); break;
+                        case "tubulars": SaveTubulars(child, ns, repo, sourceFile); break;
+                        case "wbgeometrys": SaveWbGeometrys(child, ns, repo, sourceFile); break;
+                        case "bharuns": SaveBhaRuns(child, ns, repo, sourceFile); break;
+                        case "messages": SaveMessages(child, ns, repo, sourceFile); break;
+                        case "attachments": SaveAttachments(child, ns, repo, sourceFile); break;
+                        case "formationmarkers": SaveFormationMarkers(child, ns, repo, sourceFile); break;
+                        case "trajectorystations": SaveTrajectoryStationsStandalone(child, ns, repo, sourceFile); break;
+                        case "geologyintervals": SaveGeologyIntervalsStandalone(child, ns, repo, sourceFile); break;
+                        case "lithologies": SaveLithologiesStandalone(child, ns, repo, sourceFile); break;
+                        case "tubularcomponents": SaveTubularComponentsStandalone(child, ns, repo, sourceFile); break;
+                        case "wbgeometrysections": SaveWbGeometrySectionsStandalone(child, ns, repo, sourceFile); break;
+                        default: Console.WriteLine($"  (ignorado: {childName})"); break;
+                    }
+                }
+                return;
+            }
+
             switch (rootName)
             {
                     case "wells":
@@ -66,6 +98,27 @@ namespace BochazoEtpWitsml.Services
                         break;
                     case "messages":
                         SaveMessages(root, ns, repo, sourceFile);
+                        break;
+                    case "attachments":
+                        SaveAttachments(root, ns, repo, sourceFile);
+                        break;
+                    case "formationmarkers":
+                        SaveFormationMarkers(root, ns, repo, sourceFile);
+                        break;
+                    case "trajectorystations":
+                        SaveTrajectoryStationsStandalone(root, ns, repo, sourceFile);
+                        break;
+                    case "geologyintervals":
+                        SaveGeologyIntervalsStandalone(root, ns, repo, sourceFile);
+                        break;
+                    case "lithologies":
+                        SaveLithologiesStandalone(root, ns, repo, sourceFile);
+                        break;
+                    case "tubularcomponents":
+                        SaveTubularComponentsStandalone(root, ns, repo, sourceFile);
+                        break;
+                    case "wbgeometrysections":
+                        SaveWbGeometrySectionsStandalone(root, ns, repo, sourceFile);
                         break;
                     default:
                         Console.WriteLine($"Tipo no soportado para guardar en BD: {rootName}");
@@ -195,9 +248,10 @@ namespace BochazoEtpWitsml.Services
                     GetVal(ml, ns, "endMd"),
                     created, updated, sourceFile);
 
+                var intervalIndex = 0;
                 foreach (var interval in ml.Elements(ns + "geologyInterval"))
                 {
-                    var intervalUid = interval.Attribute("uid")?.Value ?? "";
+                    var intervalUid = interval.Attribute("uid")?.Value ?? $"{uid}_gi_{intervalIndex++}";
                     var commonTime = interval.Element(ns + "commonTime");
                     var icreated = commonTime != null ? GetVal(commonTime, ns, "dTimCreation") : null;
                     var iupdated = commonTime != null ? GetVal(commonTime, ns, "dTimLastChange") : null;
@@ -240,6 +294,7 @@ namespace BochazoEtpWitsml.Services
                 repo.SaveLog(uid, wellUid, wellboreUid,
                     GetVal(log, ns, "name"),
                     GetVal(log, ns, "indexType"),
+                    GetVal(log, ns, "direction"),
                     GetVal(log, ns, "objectGrowing"),
                     created, updated, sourceFile);
             }
@@ -293,8 +348,8 @@ namespace BochazoEtpWitsml.Services
                         comp.Attribute("uid")?.Value ?? "",
                         GetVal(comp, ns, "typeTubularComp"),
                         GetVal(comp, ns, "sequence"),
-                        GetVal(comp, ns, "id"),
-                        GetVal(comp, ns, "od"),
+                        GetVal(comp, ns, "idMeasure") ?? GetVal(comp, ns, "id"),
+                        GetVal(comp, ns, "odMeasure") ?? GetVal(comp, ns, "od"),
                         GetVal(comp, ns, "len"),
                         GetVal(comp, ns, "lenJointAv"),
                         GetVal(comp, ns, "numJointStand"),
@@ -353,7 +408,7 @@ namespace BochazoEtpWitsml.Services
                 var wellboreUid = bha.Element(ns + "wellbore")?.Attribute("uid")?.Value ?? bha.Attribute("uidWellbore")?.Value ?? "";
 
                 var tubularEl = bha.Element(ns + "tubular");
-                var tubularRef = tubularEl?.Attribute("uid")?.Value ?? tubularEl?.Value ?? "";
+                var tubularRef = tubularEl?.Attribute("uidRef")?.Value ?? tubularEl?.Attribute("uid")?.Value ?? tubularEl?.Value ?? "";
 
                 var commonData = bha.Element(ns + "commonData");
                 var created = commonData != null ? GetVal(commonData, ns, "dTimCreation") : null;
@@ -368,6 +423,161 @@ namespace BochazoEtpWitsml.Services
                     created, updated, sourceFile);
             }
             Console.WriteLine($"✓ {bhaRuns.Count} bhaRun(s) guardado(s) en la base de datos");
+        }
+
+        private void SaveAttachments(XElement root, XNamespace ns, WitsmlRepository repo, string sourceFile)
+        {
+            var attachments = root.Elements(ns + "attachment").ToList();
+            foreach (var att in attachments)
+            {
+                var uid = att.Attribute("uid")?.Value ?? "";
+                var wellUid = att.Element(ns + "well")?.Attribute("uid")?.Value ?? att.Attribute("uidWell")?.Value ?? "";
+                var wellboreUid = att.Element(ns + "wellbore")?.Attribute("uid")?.Value ?? att.Attribute("uidWellbore")?.Value ?? "";
+
+                var commonData = att.Element(ns + "commonData");
+                var created = commonData != null ? GetVal(commonData, ns, "dTimCreation") : null;
+                var updated = commonData != null ? GetVal(commonData, ns, "dTimLastChange") : null;
+
+                repo.SaveAttachment(uid, wellUid, wellboreUid,
+                    GetVal(att, ns, "name"),
+                    GetVal(att, ns, "fileName"),
+                    GetVal(att, ns, "description"),
+                    created, updated, sourceFile);
+            }
+            Console.WriteLine($"✓ {attachments.Count} attachment(s) guardado(s) en la base de datos");
+        }
+
+        private void SaveFormationMarkers(XElement root, XNamespace ns, WitsmlRepository repo, string sourceFile)
+        {
+            var markers = root.Elements(ns + "formationMarker").ToList();
+            foreach (var m in markers)
+            {
+                var uid = m.Attribute("uid")?.Value ?? "";
+                var wellUid = m.Element(ns + "well")?.Attribute("uid")?.Value ?? m.Attribute("uidWell")?.Value ?? "";
+                var wellboreUid = m.Element(ns + "wellbore")?.Attribute("uid")?.Value ?? m.Attribute("uidWellbore")?.Value ?? "";
+
+                var commonData = m.Element(ns + "commonData");
+                var created = commonData != null ? GetVal(commonData, ns, "dTimCreation") : null;
+                var updated = commonData != null ? GetVal(commonData, ns, "dTimLastChange") : null;
+
+                repo.SaveFormationMarker(uid, wellUid, wellboreUid,
+                    GetVal(m, ns, "name"),
+                    GetVal(m, ns, "md"),
+                    GetVal(m, ns, "tvd"),
+                    GetVal(m, ns, "formationLithology"),
+                    created, updated, sourceFile);
+            }
+            Console.WriteLine($"✓ {markers.Count} formationMarker(s) guardado(s) en la base de datos");
+        }
+
+        private void SaveTrajectoryStationsStandalone(XElement root, XNamespace ns, WitsmlRepository repo, string sourceFile)
+        {
+            var trajectoryUid = GetParentUid(root, "uidTrajectory", "trajectoryUid", "trajectory_uid");
+            var stations = root.Elements(ns + "trajectoryStation").ToList();
+            foreach (var stn in stations)
+            {
+                var commonDataStn = stn.Element(ns + "commonData");
+                repo.SaveTrajectoryStation(
+                    trajectoryUid,
+                    stn.Attribute("uid")?.Value ?? "",
+                    GetVal(stn, ns, "dTimStn"),
+                    GetVal(stn, ns, "typeTrajStation"),
+                    GetVal(stn, ns, "md"),
+                    GetVal(stn, ns, "tvd"),
+                    GetVal(stn, ns, "incl"),
+                    GetVal(stn, ns, "azi"),
+                    GetVal(stn, ns, "dispNs"),
+                    GetVal(stn, ns, "dispEw"),
+                    GetVal(stn, ns, "vertSect"),
+                    GetVal(stn, ns, "dls"),
+                    GetVal(stn, ns, "rateTurn"),
+                    GetVal(stn, ns, "rateBuild"),
+                    GetVal(stn, ns, "mdDelta"),
+                    GetVal(stn, ns, "tvdDelta"),
+                    GetVal(stn, ns, "statusTrajStation"),
+                    sourceFile);
+            }
+            Console.WriteLine($"✓ {stations.Count} trajectoryStation(s) guardado(s) en la base de datos");
+        }
+
+        private void SaveGeologyIntervalsStandalone(XElement root, XNamespace ns, WitsmlRepository repo, string sourceFile)
+        {
+            var mudLogUid = GetParentUid(root, "uidMudLog", "mudLogUid");
+            var intervals = root.Elements(ns + "geologyInterval").ToList();
+            var intervalIndex = 0;
+            foreach (var interval in intervals)
+            {
+                var intervalUid = interval.Attribute("uid")?.Value ?? $"{mudLogUid}_gi_{intervalIndex++}";
+                var commonTime = interval.Element(ns + "commonData") ?? interval.Element(ns + "commonTime");
+                var icreated = commonTime != null ? GetVal(commonTime, ns, "dTimCreation") : null;
+                var iupdated = commonTime != null ? GetVal(commonTime, ns, "dTimLastChange") : null;
+
+                repo.SaveGeologyInterval(mudLogUid, intervalUid, GetVal(interval, ns, "typeLithology"),
+                    GetVal(interval, ns, "mdTop"), GetVal(interval, ns, "mdBottom"),
+                    icreated, iupdated, sourceFile);
+
+                foreach (var lith in interval.Elements(ns + "lithology"))
+                {
+                    repo.SaveLithology(intervalUid, lith.Attribute("uid")?.Value ?? "",
+                        GetVal(lith, ns, "type"), GetVal(lith, ns, "codeLith"),
+                        GetVal(lith, ns, "lithPc"), GetVal(lith, ns, "description"), sourceFile);
+                }
+            }
+            Console.WriteLine($"✓ {intervals.Count} geologyInterval(s) guardado(s) en la base de datos");
+        }
+
+        private void SaveLithologiesStandalone(XElement root, XNamespace ns, WitsmlRepository repo, string sourceFile)
+        {
+            var geologyIntervalUid = GetParentUid(root, "uidGeologyInterval", "geologyIntervalUid");
+            var lithologies = root.Elements(ns + "lithology").ToList();
+            foreach (var lith in lithologies)
+            {
+                repo.SaveLithology(geologyIntervalUid, lith.Attribute("uid")?.Value ?? "",
+                    GetVal(lith, ns, "type"), GetVal(lith, ns, "codeLith"),
+                    GetVal(lith, ns, "lithPc"), GetVal(lith, ns, "description"), sourceFile);
+            }
+            Console.WriteLine($"✓ {lithologies.Count} lithology(ies) guardado(s) en la base de datos");
+        }
+
+        private void SaveTubularComponentsStandalone(XElement root, XNamespace ns, WitsmlRepository repo, string sourceFile)
+        {
+            var tubularUid = GetParentUid(root, "uidTubular", "tubularUid");
+            var comps = root.Elements(ns + "tubularComponent").ToList();
+            foreach (var comp in comps)
+            {
+                repo.SaveTubularComponent(tubularUid, comp.Attribute("uid")?.Value ?? "",
+                    GetVal(comp, ns, "typeTubularComp"), GetVal(comp, ns, "sequence"),
+                    GetVal(comp, ns, "idMeasure") ?? GetVal(comp, ns, "id"),
+                    GetVal(comp, ns, "odMeasure") ?? GetVal(comp, ns, "od"),
+                    GetVal(comp, ns, "len"), GetVal(comp, ns, "lenJointAv"),
+                    GetVal(comp, ns, "numJointStand"), GetVal(comp, ns, "wtPerLen"),
+                    GetVal(comp, ns, "vendor"), sourceFile);
+            }
+            Console.WriteLine($"✓ {comps.Count} tubularComponent(s) guardado(s) en la base de datos");
+        }
+
+        private void SaveWbGeometrySectionsStandalone(XElement root, XNamespace ns, WitsmlRepository repo, string sourceFile)
+        {
+            var wbGeometryUid = GetParentUid(root, "uidWbGeometry", "wbGeometryUid");
+            var sections = root.Elements(ns + "wbGeometrySection").ToList();
+            foreach (var section in sections)
+            {
+                repo.SaveWbGeometrySection(wbGeometryUid, section.Attribute("uid")?.Value ?? "",
+                    GetVal(section, ns, "typeHoleCasing"), GetVal(section, ns, "mdTop"),
+                    GetVal(section, ns, "mdBottom"), GetVal(section, ns, "idSection"),
+                    GetVal(section, ns, "odSection"), sourceFile);
+            }
+            Console.WriteLine($"✓ {sections.Count} wbGeometrySection(s) guardado(s) en la base de datos");
+        }
+
+        private static string GetParentUid(XElement root, params string[] attrNames)
+        {
+            foreach (var name in attrNames)
+            {
+                var val = root.Attribute(name)?.Value ?? root.Attribute(root.Name.Namespace + name)?.Value;
+                if (!string.IsNullOrEmpty(val)) return val;
+            }
+            return "";
         }
 
         private void SaveMessages(XElement root, XNamespace ns, WitsmlRepository repo, string sourceFile)
@@ -422,6 +632,13 @@ namespace BochazoEtpWitsml.Services
                 case "wbgeometrys": ProcessWbGeometrysTable(root, ns); break;
                 case "bharuns": ProcessBhaRunsTable(root, ns); break;
                 case "messages": ProcessMessagesTable(root, ns); break;
+                case "attachments": ProcessAttachmentsTable(root, ns); break;
+                case "formationmarkers": ProcessFormationMarkersTable(root, ns); break;
+                case "trajectorystations": ProcessTrajectoryStationsTable(root, ns); break;
+                case "geologyintervals": ProcessGeologyIntervalsTable(root, ns); break;
+                case "lithologies": ProcessLithologiesTable(root, ns); break;
+                case "tubularcomponents": ProcessTubularComponentsTable(root, ns); break;
+                case "wbgeometrysections": ProcessWbGeometrySectionsTable(root, ns); break;
                 default: ProcessGenericTable(root, ns); break;
             }
         }
@@ -556,6 +773,33 @@ namespace BochazoEtpWitsml.Services
             Console.WriteLine($"({bhaRuns.Count} rows)");
         }
 
+        private void ProcessAttachmentsTable(XElement root, XNamespace ns)
+        {
+            var atts = root.Elements(ns + "attachment").ToList();
+            Console.WriteLine("┌── TABLE: attachments ──┐");
+            foreach (var a in atts)
+            {
+                var uid = a.Attribute("uid")?.Value ?? "";
+                var name = GetVal(a, ns, "name") ?? "NULL";
+                Console.WriteLine($"│ {uid} | {name}");
+            }
+            Console.WriteLine($"({atts.Count} rows)");
+        }
+
+        private void ProcessFormationMarkersTable(XElement root, XNamespace ns)
+        {
+            var markers = root.Elements(ns + "formationMarker").ToList();
+            Console.WriteLine("┌── TABLE: formation_markers ──┐");
+            foreach (var m in markers)
+            {
+                var uid = m.Attribute("uid")?.Value ?? "";
+                var name = GetVal(m, ns, "name") ?? "NULL";
+                var md = GetVal(m, ns, "md") ?? "NULL";
+                Console.WriteLine($"│ {uid} | {name} | md={md}");
+            }
+            Console.WriteLine($"({markers.Count} rows)");
+        }
+
         private void ProcessMessagesTable(XElement root, XNamespace ns)
         {
             var messages = root.Elements(ns + "message").ToList();
@@ -568,6 +812,76 @@ namespace BochazoEtpWitsml.Services
                 Console.WriteLine($"│ {uid} | {name} | {dTim}");
             }
             Console.WriteLine($"({messages.Count} rows)");
+        }
+
+        private void ProcessTrajectoryStationsTable(XElement root, XNamespace ns)
+        {
+            var stations = root.Elements(ns + "trajectoryStation").ToList();
+            Console.WriteLine($"┌── TABLE: trajectory_stations ──┐");
+            foreach (var s in stations.Take(10))
+            {
+                var uid = s.Attribute("uid")?.Value ?? "";
+                var md = GetVal(s, ns, "md") ?? "NULL";
+                Console.WriteLine($"│ {uid} | md={md}");
+            }
+            if (stations.Count > 10) Console.WriteLine($"│ ... y {stations.Count - 10} más");
+            Console.WriteLine($"({stations.Count} rows)");
+        }
+
+        private void ProcessGeologyIntervalsTable(XElement root, XNamespace ns)
+        {
+            var intervals = root.Elements(ns + "geologyInterval").ToList();
+            Console.WriteLine($"┌── TABLE: geology_intervals ──┐");
+            foreach (var g in intervals.Take(10))
+            {
+                var uid = g.Attribute("uid")?.Value ?? "";
+                var mdTop = GetVal(g, ns, "mdTop") ?? "NULL";
+                Console.WriteLine($"│ {uid} | mdTop={mdTop}");
+            }
+            if (intervals.Count > 10) Console.WriteLine($"│ ... y {intervals.Count - 10} más");
+            Console.WriteLine($"({intervals.Count} rows)");
+        }
+
+        private void ProcessLithologiesTable(XElement root, XNamespace ns)
+        {
+            var liths = root.Elements(ns + "lithology").ToList();
+            Console.WriteLine($"┌── TABLE: lithologies ──┐");
+            foreach (var l in liths.Take(10))
+            {
+                var uid = l.Attribute("uid")?.Value ?? "";
+                var type = GetVal(l, ns, "type") ?? "NULL";
+                Console.WriteLine($"│ {uid} | {type}");
+            }
+            if (liths.Count > 10) Console.WriteLine($"│ ... y {liths.Count - 10} más");
+            Console.WriteLine($"({liths.Count} rows)");
+        }
+
+        private void ProcessTubularComponentsTable(XElement root, XNamespace ns)
+        {
+            var comps = root.Elements(ns + "tubularComponent").ToList();
+            Console.WriteLine($"┌── TABLE: tubular_components ──┐");
+            foreach (var c in comps.Take(10))
+            {
+                var uid = c.Attribute("uid")?.Value ?? "";
+                var type = GetVal(c, ns, "typeTubularComp") ?? "NULL";
+                Console.WriteLine($"│ {uid} | {type}");
+            }
+            if (comps.Count > 10) Console.WriteLine($"│ ... y {comps.Count - 10} más");
+            Console.WriteLine($"({comps.Count} rows)");
+        }
+
+        private void ProcessWbGeometrySectionsTable(XElement root, XNamespace ns)
+        {
+            var sections = root.Elements(ns + "wbGeometrySection").ToList();
+            Console.WriteLine($"┌── TABLE: wb_geometry_sections ──┐");
+            foreach (var s in sections.Take(10))
+            {
+                var uid = s.Attribute("uid")?.Value ?? "";
+                var mdTop = GetVal(s, ns, "mdTop") ?? "NULL";
+                Console.WriteLine($"│ {uid} | mdTop={mdTop}");
+            }
+            if (sections.Count > 10) Console.WriteLine($"│ ... y {sections.Count - 10} más");
+            Console.WriteLine($"({sections.Count} rows)");
         }
 
         private void ProcessGenericTable(XElement root, XNamespace ns)

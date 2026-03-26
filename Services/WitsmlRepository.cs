@@ -1,8 +1,21 @@
 using System;
+using System.Collections.Generic;
 using Microsoft.Data.SqlClient;
 
 namespace BochazoEtpWitsml.Services
 {
+    public class WellInfo
+    {
+        public string Uid { get; set; } = "";
+        public string? Name { get; set; }
+        public string? TimeZone { get; set; }
+        public string? StatusWell { get; set; }
+        public DateTime? DTimCreation { get; set; }
+        public DateTime? DTimLastChange { get; set; }
+        public string? SourceFile { get; set; }
+        public DateTime? ProcessedAt { get; set; }
+    }
+
     public class WitsmlRepository : IDisposable
     {
         private readonly string _connectionString;
@@ -198,11 +211,11 @@ namespace BochazoEtpWitsml.Services
         }
 
         public void SaveLog(string uid, string? wellUid, string? wellboreUid, string? name,
-            string? indexType, string? objectGrowing, string? dTimCreation, string? dTimLastChange, string sourceFile)
+            string? indexType, string? direction, string? objectGrowing, string? dTimCreation, string? dTimLastChange, string sourceFile)
         {
             using var cmd = new SqlCommand(
-                @"INSERT INTO logs (uid, well_uid, wellbore_uid, name, index_type, object_growing, d_tim_creation, d_tim_last_change, source_file)
-                  VALUES (@uid, @wellUid, @wellboreUid, @name, @indexType, @objectGrowing, @dTimCreation, @dTimLastChange, @sourceFile);",
+                @"INSERT INTO logs (uid, well_uid, wellbore_uid, name, index_type, direction, object_growing, d_tim_creation, d_tim_last_change, source_file)
+                  VALUES (@uid, @wellUid, @wellboreUid, @name, @indexType, @direction, @objectGrowing, @dTimCreation, @dTimLastChange, @sourceFile);",
                 GetConnection());
 
             cmd.Parameters.AddWithValue("@uid", uid);
@@ -210,6 +223,7 @@ namespace BochazoEtpWitsml.Services
             cmd.Parameters.AddWithValue("@wellboreUid", EmptyToNull(wellboreUid));
             cmd.Parameters.AddWithValue("@name", (object?)name ?? DBNull.Value);
             cmd.Parameters.AddWithValue("@indexType", (object?)indexType ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@direction", (object?)direction ?? DBNull.Value);
             cmd.Parameters.AddWithValue("@objectGrowing", (object?)objectGrowing ?? DBNull.Value);
             cmd.Parameters.AddWithValue("@dTimCreation", ParseDateTime(dTimCreation));
             cmd.Parameters.AddWithValue("@dTimLastChange", ParseDateTime(dTimLastChange));
@@ -346,6 +360,47 @@ namespace BochazoEtpWitsml.Services
             cmd.ExecuteNonQuery();
         }
 
+        public void SaveAttachment(string uid, string? wellUid, string? wellboreUid, string? name,
+            string? fileName, string? description, string? dTimCreation, string? dTimLastChange, string sourceFile)
+        {
+            using var cmd = new SqlCommand(
+                @"INSERT INTO attachments (uid, well_uid, wellbore_uid, name, file_name, description, d_tim_creation, d_tim_last_change, source_file)
+                  VALUES (@uid, @wellUid, @wellboreUid, @name, @fileName, @description, @dTimCreation, @dTimLastChange, @sourceFile);",
+                GetConnection());
+
+            cmd.Parameters.AddWithValue("@uid", uid);
+            cmd.Parameters.AddWithValue("@wellUid", EmptyToNull(wellUid));
+            cmd.Parameters.AddWithValue("@wellboreUid", EmptyToNull(wellboreUid));
+            cmd.Parameters.AddWithValue("@name", (object?)name ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@fileName", (object?)fileName ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@description", (object?)description ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@dTimCreation", ParseDateTime(dTimCreation));
+            cmd.Parameters.AddWithValue("@dTimLastChange", ParseDateTime(dTimLastChange));
+            cmd.Parameters.AddWithValue("@sourceFile", (object?)sourceFile ?? DBNull.Value);
+            cmd.ExecuteNonQuery();
+        }
+
+        public void SaveFormationMarker(string uid, string? wellUid, string? wellboreUid, string? name,
+            string? md, string? tvd, string? formationLithology, string? dTimCreation, string? dTimLastChange, string sourceFile)
+        {
+            using var cmd = new SqlCommand(
+                @"INSERT INTO formation_markers (uid, well_uid, wellbore_uid, name, md, tvd, formation_lithology, d_tim_creation, d_tim_last_change, source_file)
+                  VALUES (@uid, @wellUid, @wellboreUid, @name, @md, @tvd, @formationLithology, @dTimCreation, @dTimLastChange, @sourceFile);",
+                GetConnection());
+
+            cmd.Parameters.AddWithValue("@uid", uid);
+            cmd.Parameters.AddWithValue("@wellUid", EmptyToNull(wellUid));
+            cmd.Parameters.AddWithValue("@wellboreUid", EmptyToNull(wellboreUid));
+            cmd.Parameters.AddWithValue("@name", (object?)name ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@md", ParseDecimal(md));
+            cmd.Parameters.AddWithValue("@tvd", ParseDecimal(tvd));
+            cmd.Parameters.AddWithValue("@formationLithology", (object?)formationLithology ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@dTimCreation", ParseDateTime(dTimCreation));
+            cmd.Parameters.AddWithValue("@dTimLastChange", ParseDateTime(dTimLastChange));
+            cmd.Parameters.AddWithValue("@sourceFile", (object?)sourceFile ?? DBNull.Value);
+            cmd.ExecuteNonQuery();
+        }
+
         public void SaveMessage(string uid, string? wellUid, string? wellboreUid, string? name,
             string? dTim, string? md, string? typeMessage, string? messageText,
             string? dTimCreation, string? dTimLastChange, string sourceFile)
@@ -397,6 +452,31 @@ namespace BochazoEtpWitsml.Services
             if (string.IsNullOrWhiteSpace(value) || value == "NULL") return DBNull.Value;
             if (int.TryParse(value, out var i)) return i;
             return DBNull.Value;
+        }
+
+        public IReadOnlyList<WellInfo> GetAllWells()
+        {
+            var list = new List<WellInfo>();
+            using var cmd = new SqlCommand(
+                @"SELECT uid, name, time_zone, status_well, d_tim_creation, d_tim_last_change, source_file, processed_at
+                  FROM wells ORDER BY name, uid",
+                GetConnection());
+            using var r = cmd.ExecuteReader();
+            while (r.Read())
+            {
+                list.Add(new WellInfo
+                {
+                    Uid = r.GetString(0),
+                    Name = r.IsDBNull(1) ? null : r.GetString(1),
+                    TimeZone = r.IsDBNull(2) ? null : r.GetString(2),
+                    StatusWell = r.IsDBNull(3) ? null : r.GetString(3),
+                    DTimCreation = r.IsDBNull(4) ? null : r.GetDateTime(4),
+                    DTimLastChange = r.IsDBNull(5) ? null : r.GetDateTime(5),
+                    SourceFile = r.IsDBNull(6) ? null : r.GetString(6),
+                    ProcessedAt = r.IsDBNull(7) ? null : r.GetDateTime(7)
+                });
+            }
+            return list;
         }
 
         public void Dispose() => _connection?.Dispose();

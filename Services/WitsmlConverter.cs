@@ -11,6 +11,35 @@ namespace BochazoEtpWitsml.Services
     /// </summary>
     public class WitsmlConverter
     {
+        /// <summary>
+        /// Indica si el contenido XML es WITSML 2.x y no requiere conversión.
+        /// </summary>
+        public static bool IsWitsml21(string xmlContent)
+        {
+            try
+            {
+                var doc = XDocument.Parse(xmlContent);
+                var root = doc.Root;
+                if (root == null) return false;
+                var version = root.Attribute("version")?.Value;
+                var ns = root.Name.Namespace?.ToString() ?? "";
+                return version == "2.0" || version == "2.1" ||
+                       ns.Contains("energistics.org/energyml/data/witsmlv2", StringComparison.OrdinalIgnoreCase);
+            }
+            catch { return false; }
+        }
+
+        /// <summary>
+        /// Versión rápida: detecta WITSML 2.x leyendo solo el inicio del archivo (sin parse completo).
+        /// Uso recomendado para contar muchos archivos grandes (logs, etc.).
+        /// </summary>
+        public static bool IsWitsml21FromChunk(string xmlChunk)
+        {
+            if (string.IsNullOrEmpty(xmlChunk)) return false;
+            return System.Text.RegularExpressions.Regex.IsMatch(xmlChunk, @"version\s*=\s*[""]2\.[01][""]", System.Text.RegularExpressions.RegexOptions.IgnoreCase) ||
+                   xmlChunk.Contains("energistics.org/energyml/data/witsmlv2", StringComparison.OrdinalIgnoreCase);
+        }
+
         // Namespaces
         private static readonly XNamespace Witsml1411 = "http://www.witsml.org/schemas/1series";
         private static readonly XNamespace Witsml21 = "http://www.energistics.org/energyml/data/witsmlv2";
@@ -68,6 +97,7 @@ namespace BochazoEtpWitsml.Services
                         convertedRoot = ConvertWellbores(root);
                         break;
                     case "trajectorys":
+                    case "trajectories":
                         convertedRoot = ConvertTrajectories(root);
                         break;
                     case "mudlogs":
@@ -90,6 +120,27 @@ namespace BochazoEtpWitsml.Services
                         break;
                     case "messages":
                         convertedRoot = ConvertMessages(root);
+                        break;
+                    case "attachments":
+                        convertedRoot = ConvertAttachments(root);
+                        break;
+                    case "formationmarkers":
+                        convertedRoot = ConvertFormationMarkers(root);
+                        break;
+                    case "trajectorystations":
+                        convertedRoot = ConvertGeneric(root);
+                        break;
+                    case "geologyintervals":
+                        convertedRoot = ConvertGeneric(root);
+                        break;
+                    case "lithologies":
+                        convertedRoot = ConvertGeneric(root);
+                        break;
+                    case "tubularcomponents":
+                        convertedRoot = ConvertGeneric(root);
+                        break;
+                    case "wbgeometrysections":
+                        convertedRoot = ConvertGeneric(root);
                         break;
                     default:
                         Console.WriteLine($"⚠ Tipo de objeto no reconocido: {localName}. Intentando conversión genérica...");
@@ -131,6 +182,10 @@ namespace BochazoEtpWitsml.Services
                 ConvertElement(well, convertedWell, "name", "name");
                 ConvertElement(well, convertedWell, "timeZone", "timeZone");
                 ConvertElement(well, convertedWell, "statusWell", "statusWell");
+                ConvertElement(well, convertedWell, "country", "country");
+                ConvertElement(well, convertedWell, "state", "state");
+                ConvertElement(well, convertedWell, "county", "county");
+                ConvertElement(well, convertedWell, "field", "field");
 
                 // Convertir commonData
                 var commonData = well.Element(Witsml1411 + "commonData");
@@ -444,6 +499,7 @@ namespace BochazoEtpWitsml.Services
                 // Convertir elementos básicos (simplificado - puede necesitar más campos)
                 ConvertElement(log, convertedLog, "name", "name");
                 ConvertElement(log, convertedLog, "indexType", "indexType");
+                ConvertElement(log, convertedLog, "direction", "direction");
                 ConvertElement(log, convertedLog, "objectGrowing", "objectGrowing");
 
                 // Convertir commonData
@@ -656,7 +712,18 @@ namespace BochazoEtpWitsml.Services
                 }
 
                 ConvertElement(bhaRun, converted, "name", "name");
-                ConvertElement(bhaRun, converted, "tubular", "tubular");
+                // tubular en v1.4 puede ser <tubular uidRef="x"/> o elemento tubularRef
+                var tubularEl = bhaRun.Element(Witsml1411 + "tubular");
+                if (tubularEl != null)
+                {
+                    var tubularRef = tubularEl.Attribute("uidRef")?.Value ?? tubularEl.Attribute("uid")?.Value ?? tubularEl.Value;
+                    if (!string.IsNullOrEmpty(tubularRef))
+                    {
+                        var tubularConverted = new XElement(Witsml21 + "tubular");
+                        tubularConverted.Add(new XAttribute("uid", tubularRef));
+                        converted.Add(tubularConverted);
+                    }
+                }
                 ConvertElement(bhaRun, converted, "dTimStart", "dTimStart");
                 ConvertElement(bhaRun, converted, "dTimStop", "dTimStop");
                 ConvertElement(bhaRun, converted, "numStringRun", "numStringRun");
@@ -675,6 +742,100 @@ namespace BochazoEtpWitsml.Services
             }
 
             return bhaRuns;
+        }
+
+        private XElement ConvertAttachments(XElement root)
+        {
+            var attachments = new XElement(Witsml21 + "attachments", new XAttribute("version", "2.1"));
+
+            foreach (var att in root.Elements(Witsml1411 + "attachment"))
+            {
+                var converted = new XElement(Witsml21 + "attachment");
+
+                foreach (var attr in att.Attributes())
+                {
+                    if (attr.Name.LocalName == "uid")
+                        converted.Add(new XAttribute("uid", attr.Value));
+                    else if (attr.Name.LocalName == "uidWell")
+                    {
+                        var wellRef = new XElement(Witsml21 + "well");
+                        wellRef.Add(new XAttribute("uid", attr.Value));
+                        converted.Add(wellRef);
+                    }
+                    else if (attr.Name.LocalName == "uidWellbore")
+                    {
+                        var wellboreRef = new XElement(Witsml21 + "wellbore");
+                        wellboreRef.Add(new XAttribute("uid", attr.Value));
+                        converted.Add(wellboreRef);
+                    }
+                }
+
+                ConvertElement(att, converted, "name", "name");
+                ConvertElement(att, converted, "fileName", "fileName");
+                ConvertElement(att, converted, "description", "description");
+                ConvertElement(att, converted, "object", "object");
+
+                var commonData = att.Element(Witsml1411 + "commonData");
+                if (commonData != null)
+                {
+                    var convertedCommonData = new XElement(Witsml21 + "commonData");
+                    ConvertElement(commonData, convertedCommonData, "dTimCreation", "dTimCreation");
+                    ConvertElement(commonData, convertedCommonData, "dTimLastChange", "dTimLastChange");
+                    if (convertedCommonData.HasElements || convertedCommonData.HasAttributes)
+                        converted.Add(convertedCommonData);
+                }
+
+                attachments.Add(converted);
+            }
+
+            return attachments;
+        }
+
+        private XElement ConvertFormationMarkers(XElement root)
+        {
+            var formationMarkers = new XElement(Witsml21 + "formationMarkers", new XAttribute("version", "2.1"));
+
+            foreach (var fm in root.Elements(Witsml1411 + "formationMarker"))
+            {
+                var converted = new XElement(Witsml21 + "formationMarker");
+
+                foreach (var attr in fm.Attributes())
+                {
+                    if (attr.Name.LocalName == "uid")
+                        converted.Add(new XAttribute("uid", attr.Value));
+                    else if (attr.Name.LocalName == "uidWell")
+                    {
+                        var wellRef = new XElement(Witsml21 + "well");
+                        wellRef.Add(new XAttribute("uid", attr.Value));
+                        converted.Add(wellRef);
+                    }
+                    else if (attr.Name.LocalName == "uidWellbore")
+                    {
+                        var wellboreRef = new XElement(Witsml21 + "wellbore");
+                        wellboreRef.Add(new XAttribute("uid", attr.Value));
+                        converted.Add(wellboreRef);
+                    }
+                }
+
+                ConvertElement(fm, converted, "name", "name");
+                ConvertElement(fm, converted, "md", "md");
+                ConvertElement(fm, converted, "tvd", "tvd");
+                ConvertElement(fm, converted, "formationLithology", "formationLithology");
+
+                var commonData = fm.Element(Witsml1411 + "commonData");
+                if (commonData != null)
+                {
+                    var convertedCommonData = new XElement(Witsml21 + "commonData");
+                    ConvertElement(commonData, convertedCommonData, "dTimCreation", "dTimCreation");
+                    ConvertElement(commonData, convertedCommonData, "dTimLastChange", "dTimLastChange");
+                    if (convertedCommonData.HasElements || convertedCommonData.HasAttributes)
+                        converted.Add(convertedCommonData);
+                }
+
+                formationMarkers.Add(converted);
+            }
+
+            return formationMarkers;
         }
 
         private XElement ConvertMessages(XElement root)

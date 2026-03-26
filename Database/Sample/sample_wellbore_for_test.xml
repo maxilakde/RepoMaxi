@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wellbores xmlns="http://www.witsml.org/schemas/1series" version="1.4.1.1">
+  <wellbore uid="wb-test-001" uidWell="well-test-001">
+    <name>Pozo Principal - Test</name>
+    <isActive>true</isActive>
+    <commonData>
+      <dTimCreation>2024-02-15T10:00:00Z</dTimCreation>
+      <dTimLastChange>2024-02-27T09:00:00Z</dTimLastChange>
+    </commonData>
+  </wellbore>
+</wellbores>

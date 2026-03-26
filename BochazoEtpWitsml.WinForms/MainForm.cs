@@ -58,7 +58,7 @@ namespace BochazoEtpWitsml.WinForms
                 DropDownStyle = ComboBoxStyle.DropDownList,
                 Anchor = AnchorStyles.Left | AnchorStyles.Right
             };
-            var types = new[] { "wells", "wellbores", "trajectories", "mudLogs", "logs", "rigs", "tubulars", "wbGeometrys", "bhaRuns", "messages" };
+            var types = new[] { "wells", "wellbores", "trajectories", "trajectoryStations", "mudLogs", "geologyIntervals", "lithologies", "logs", "rigs", "tubulars", "tubularComponents", "wbGeometrys", "wbGeometrySections", "bhaRuns", "messages", "attachments", "formationMarkers" };
             foreach (var key in types)
                 _comboType.Items.Add(new ComboItem(key, WitsmlFileCounter.ObjectTypeDisplayNames[key]));
             _comboType.SelectedIndex = 0;
@@ -155,9 +155,12 @@ namespace BochazoEtpWitsml.WinForms
             try
             {
                 var counter = new WitsmlFileCounter(basePath);
-                var count = await Task.Run(() => counter.CountByFolder(item.Key), CancellationToken.None);
-                _lblCount.Text = count.ToString("N0");
-                Log($"Tipo: {item.Display} → {count:N0} archivo(s) en carpeta(s) correspondientes.");
+                var (count1411, count21) = await Task.Run(() => counter.CountByContentWithVersionBreakdown(item.Key), CancellationToken.None);
+                var total = count1411 + count21;
+                _lblCount.Text = total > 0
+                    ? $"{total:N0}  (1.4.1.1: {count1411:N0}  ·  2.1: {count21:N0})"
+                    : "0";
+                Log($"Tipo: {item.Display} → {count1411:N0} en 1.4.1.1, {count21:N0} en 2.1. Total: {total:N0}");
             }
             catch (Exception ex)
             {
@@ -192,7 +195,7 @@ namespace BochazoEtpWitsml.WinForms
             try
             {
                 var counter = new WitsmlFileCounter(basePath);
-                var files = counter.GetFilesForType(item.Key).ToList();
+                var files = await Task.Run(() => counter.GetFilesForTypeByContent(item.Key).ToList(), CancellationToken.None);
                 var total = files.Count;
 
                 if (total == 0)
@@ -215,18 +218,37 @@ namespace BochazoEtpWitsml.WinForms
                 {
                     try
                     {
-                        var convertedXml = converter.ConvertXml(await File.ReadAllTextAsync(file));
-                        var relPath = Path.GetRelativePath(basePath, file);
-                        var outPath = Path.Combine(outputDir, Path.ChangeExtension(relPath, ".xml"));
+                        var xmlContent = await File.ReadAllTextAsync(file);
+                        string pathToProcess;
 
-                        var outDir = Path.GetDirectoryName(outPath);
-                        if (!string.IsNullOrEmpty(outDir))
-                            Directory.CreateDirectory(outDir);
+                        if (WitsmlConverter.IsWitsml21(xmlContent))
+                        {
+                            // Ya es 2.1: procesar directamente sin convertir ni duplicar
+                            pathToProcess = file;
+                        }
+                        else
+                        {
+                            var relPath = Path.GetRelativePath(basePath, file);
+                            var outPath = Path.Combine(outputDir, Path.ChangeExtension(relPath, ".xml"));
 
-                        await File.WriteAllTextAsync(outPath, convertedXml);
+                            if (File.Exists(outPath) && File.GetLastWriteTimeUtc(outPath) >= File.GetLastWriteTimeUtc(file))
+                            {
+                                // Ya convertido y actualizado: usar el existente sin reconvertir
+                                pathToProcess = outPath;
+                            }
+                            else
+                            {
+                                var convertedXml = converter.ConvertXml(xmlContent);
+                                var outDir = Path.GetDirectoryName(outPath);
+                                if (!string.IsNullOrEmpty(outDir))
+                                    Directory.CreateDirectory(outDir);
+                                await File.WriteAllTextAsync(outPath, convertedXml);
+                                pathToProcess = outPath;
+                            }
+                        }
 
                         using var repo = new WitsmlRepository(connStr);
-                        await processor.ProcessWitsmlFileAsync(outPath, repo);
+                        await processor.ProcessWitsmlFileAsync(pathToProcess, repo);
                         processed++;
                     }
                     catch (Exception ex)
@@ -238,8 +260,8 @@ namespace BochazoEtpWitsml.WinForms
                     _progressBar.Value = processed + errors;
                 }
 
-                Log($"✓ Completado: {processed} procesados, {errors} error(es).");
-                MessageBox.Show($"Procesados: {processed}\nErrores: {errors}", "Resultado", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Log($"✓ Completado: {processed} archivo(s) procesado(s), {errors} error(es).");
+                MessageBox.Show($"{total} archivo(s) encontrado(s).\nProcesados: {processed}\nErrores: {errors}", "Resultado", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {

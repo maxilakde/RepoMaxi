@@ -143,6 +143,7 @@ CREATE TABLE logs (
     wellbore_uid VARCHAR(100),
     name NVARCHAR(255),
     index_type VARCHAR(50),
+    direction VARCHAR(20),
     object_growing VARCHAR(10),
     d_tim_creation DATETIME2,
     d_tim_last_change DATETIME2,
@@ -249,6 +250,39 @@ CREATE TABLE bha_runs (
     processed_at DATETIME2 DEFAULT GETDATE()
 );
 
+-- Tabla: attachments
+IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'attachments')
+CREATE TABLE attachments (
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    uid VARCHAR(100) NOT NULL,
+    well_uid VARCHAR(100),
+    wellbore_uid VARCHAR(100),
+    name NVARCHAR(255),
+    file_name NVARCHAR(500),
+    description NVARCHAR(500),
+    d_tim_creation DATETIME2,
+    d_tim_last_change DATETIME2,
+    source_file NVARCHAR(500),
+    processed_at DATETIME2 DEFAULT GETDATE()
+);
+
+-- Tabla: formation_markers
+IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'formation_markers')
+CREATE TABLE formation_markers (
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    uid VARCHAR(100) NOT NULL,
+    well_uid VARCHAR(100),
+    wellbore_uid VARCHAR(100),
+    name NVARCHAR(255),
+    md DECIMAL(18,4),
+    tvd DECIMAL(18,4),
+    formation_lithology NVARCHAR(255),
+    d_tim_creation DATETIME2,
+    d_tim_last_change DATETIME2,
+    source_file NVARCHAR(500),
+    processed_at DATETIME2 DEFAULT GETDATE()
+);
+
 -- Tabla: messages
 IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'messages')
 CREATE TABLE messages (
@@ -266,6 +300,15 @@ CREATE TABLE messages (
     source_file NVARCHAR(500),
     processed_at DATETIME2 DEFAULT GETDATE()
 );
+
+-- Migración: añadir direction a logs si no existe
+IF EXISTS (SELECT * FROM sys.tables WHERE name = 'logs')
+   AND NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('logs') AND name = 'direction')
+BEGIN
+    ALTER TABLE logs ADD direction VARCHAR(20) NULL;
+    PRINT 'Columna direction añadida a logs.';
+END
+GO
 
 PRINT 'Base de datos WitsmlData creada/actualizada correctamente.';
 GO

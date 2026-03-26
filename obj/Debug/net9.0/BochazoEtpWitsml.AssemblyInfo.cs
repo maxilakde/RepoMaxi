@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("BochazoEtpWitsml")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ecf95254e3c3eb250d77941509c1b6acd0903aca")]
 [assembly: System.Reflection.AssemblyProductAttribute("BochazoEtpWitsml")]
 [assembly: System.Reflection.AssemblyTitleAttribute("BochazoEtpWitsml")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
