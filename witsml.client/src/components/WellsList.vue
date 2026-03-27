@@ -6,7 +6,7 @@
     <div v-if="loading" class="alert alert-info">Cargando...</div>
     <div v-else-if="error" class="alert alert-danger">{{ error }}</div>
     <div v-else-if="wells.length === 0" class="alert alert-info">
-      No hay pozos cargados. Procese archivos WITSML con <code>BochazoEtpWitsml</code> para cargar datos.
+      No hay pozos cargados. Procese archivos WITSML con <code>WitsmlODViewer</code> para cargar datos.
     </div>
     <div v-else>
       <div class="table-responsive">

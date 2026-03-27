@@ -1693,9 +1693,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\TFS-CABL\\BochazoEtpWitsml\\BochazoEtpWitsml.csproj",
-      "projectName": "BochazoEtpWitsml",
-      "projectPath": "C:\\TFS-CABL\\BochazoEtpWitsml\\BochazoEtpWitsml.csproj",
+      "projectUniqueName": "C:\\TFS-CABL\\BochazoEtpWitsml\\WitsmlODViewer.csproj",
+      "projectName": "WitsmlODViewer",
+      "projectPath": "C:\\TFS-CABL\\BochazoEtpWitsml\\WitsmlODViewer.csproj",
       "packagesPath": "C:\\Users\\maxim\\.nuget\\packages\\",
       "outputPath": "C:\\TFS-CABL\\BochazoEtpWitsml\\obj\\",
       "projectStyle": "PackageReference",

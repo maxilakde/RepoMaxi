@@ -1,10 +1,10 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace BochazoEtpWitsml.Services
+namespace WitsmlODViewer.Services
 {
     /// <summary>
     /// Servicio para convertir archivos Witsml de versión 1.4.1.1 a 2.1

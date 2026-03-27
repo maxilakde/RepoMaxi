@@ -1,8 +1,8 @@
-using System;
+﻿using System;
 using System.Threading.Tasks;
-using BochazoEtpWitsml.Services;
+using WitsmlODViewer.Services;
 
-namespace BochazoEtpWitsml
+namespace WitsmlODViewer
 {
     class Program
     {
@@ -59,15 +59,15 @@ namespace BochazoEtpWitsml
             Console.WriteLine();
             Console.WriteLine("Uso:");
             Console.WriteLine("  1. Procesar archivo (guardar en base de datos SQL Server):");
-            Console.WriteLine("     BochazoEtpWitsml <archivo.xml>");
+            Console.WriteLine("     WitsmlODViewer <archivo.xml>");
             Console.WriteLine();
             Console.WriteLine("  2. Convertir WITSML 1.4.1.1 a 2.1:");
-            Console.WriteLine("     BochazoEtpWitsml --convert <archivo-o-directorio>");
-            Console.WriteLine("     BochazoEtpWitsml -c <archivo-o-directorio>");
+            Console.WriteLine("     WitsmlODViewer --convert <archivo-o-directorio>");
+            Console.WriteLine("     WitsmlODViewer -c <archivo-o-directorio>");
             Console.WriteLine();
             Console.WriteLine("  3. Convertir directorio y cargar en base de datos:");
-            Console.WriteLine("     BochazoEtpWitsml --load <directorio>");
-            Console.WriteLine("     BochazoEtpWitsml -l <directorio>");
+            Console.WriteLine("     WitsmlODViewer --load <directorio>");
+            Console.WriteLine("     WitsmlODViewer -l <directorio>");
             Console.WriteLine();
             Console.WriteLine("Base de datos: .\\SQLExpress, WitsmlData");
             Console.WriteLine("Crear BD: sqlcmd -S .\\SQLExpress -i Database\\CreateWitsmlDatabase.sql");

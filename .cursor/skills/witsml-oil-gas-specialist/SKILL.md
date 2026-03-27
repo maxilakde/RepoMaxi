@@ -144,7 +144,7 @@ Usar esta skill cuando el usuario:
 - Convierta entre versiones WITSML (1.4.1.1 ↔ 2.0/2.1)
 - Mapee datos WITSML a bases de datos relacionales
 
-## Patrones del Proyecto BochazoEtpWitsml
+## Patrones del Proyecto WitsmlODViewer
 
 Si el contexto es este repositorio:
 - **WitsmlRepository**: Persistencia SQL; métodos Save* por tipo de objeto; MERGE para wells, INSERT para hijos

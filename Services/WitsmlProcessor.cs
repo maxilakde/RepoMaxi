@@ -1,10 +1,10 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace BochazoEtpWitsml.Services
+namespace WitsmlODViewer.Services
 {
     public class WitsmlProcessor
     {

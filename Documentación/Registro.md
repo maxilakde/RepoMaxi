@@ -1,4 +1,4 @@
-# Registro de documentación - BochazoEtpWitsml
+# Registro de documentación - WitsmlODViewer
 
 Documento de seguimiento: preguntas del usuario y respuestas del asistente.
 
@@ -47,13 +47,13 @@ Queda establecido el procedimiento: ante cada solicitud relacionada con este wor
 
 ### Respuesta
 
-Se creó el proyecto **BochazoEtpWitsml.Web** (ASP.NET Core Razor Pages) dentro de la solución.
+Se creó el proyecto **WitsmlODViewer.Web** (ASP.NET Core Razor Pages) dentro de la solución.
 
 **Nota:** No se pudo acceder al PDF (archivo muy grande) ni al proyecto GestionResidentes (no encontrado en el workspace). Se siguió una arquitectura ASP.NET Core estándar.
 
 **Estructura creada:**
 
-- **BochazoEtpWitsml.Web/** – Proyecto web
+- **WitsmlODViewer.Web/** – Proyecto web
   - `Services/WellsService.cs` – Servicio que lee la tabla `wells` de WitsmlData
   - `Pages/Index.cshtml` – Página única con tabla de wells (UID, Nombre, Zona horaria, Estado, fechas, archivo origen)
   - `appsettings.json` – Connection string a `.\SQLExpress`, base de datos `WitsmlData`
@@ -64,8 +64,8 @@ Se creó el proyecto **BochazoEtpWitsml.Web** (ASP.NET Core Razor Pages) dentro 
 **Para ejecutar:**
 
 ```powershell
-cd c:\TFS-CABL\BochazoEtpWitsml
-dotnet run --project BochazoEtpWitsml.Web
+cd c:\TFS-CABL\WitsmlODViewer
+dotnet run --project WitsmlODViewer.Web
 ```
 
 Abre `https://localhost:5xxx` o `http://localhost:5xxx` (el puerto se indica en la consola).
@@ -86,12 +86,12 @@ Se reestructuró la solución web siguiendo la arquitectura de **GestionResident
 
 **Estructura actual:**
 
-1. **BochazoEtpWitsml.DataAccess** – Capa de datos
+1. **WitsmlODViewer.DataAccess** – Capa de datos
    - `Models/Well.cs` – Entidad EF Core mapeada a tabla `wells`
    - `WitsmlDataContext.cs` – DbContext con DbSet\<Well\>
    - Entity Framework Core SqlServer
 
-2. **BochazoEtpWitsml.Server** – API REST + servidor estático
+2. **WitsmlODViewer.Server** – API REST + servidor estático
    - `Controllers/WellsController.cs` – GET `/api/v1/wells`
    - `Services/IWellsService`, `WellsService` – Lógica de negocio
    - `DTOs/WellDTO.cs` – DTO para la API
@@ -107,8 +107,8 @@ Se reestructuró la solución web siguiendo la arquitectura de **GestionResident
 **Para ejecutar:**
 
 ```powershell
-cd c:\TFS-CABL\BochazoEtpWitsml
-dotnet run --project BochazoEtpWitsml.Server
+cd c:\TFS-CABL\WitsmlODViewer
+dotnet run --project WitsmlODViewer.Server
 ```
 
 Abre la URL que muestre la consola (por ejemplo `https://localhost:7238`). En desarrollo, el SPA se sirve desde el proxy de Vite.
@@ -125,11 +125,11 @@ Abre la URL que muestre la consola (por ejemplo `https://localhost:7238`). En de
 
 Se agregó la información del Rig al listado de wells en la Página de Bienvenida (Lista de Pozos):
 
-1. **BochazoEtpWitsml.DataAccess**
+1. **WitsmlODViewer.DataAccess**
    - Nuevo modelo `Rig.cs` mapeado a tabla `rigs`
    - `WitsmlDataContext`: agregado `DbSet<Rig>`
 
-2. **BochazoEtpWitsml.Server**
+2. **WitsmlODViewer.Server**
    - `WellDTO`: nueva propiedad `Rig` de tipo `RigInfoDTO` (name, owner, typeRig)
    - `WellsService`: incluye el Rig asociado a cada well (por `well_uid`)
 
@@ -139,7 +139,7 @@ Se agregó la información del Rig al listado de wells en la Página de Bienveni
 
 **Archivo de prueba:** `Database\Sample\sample_rigs.xml` – procesar con:
 ```powershell
-dotnet run --project .\BochazoEtpWitsml.csproj -- "Database\Sample\sample_rigs.xml"
+dotnet run --project .\WitsmlODViewer.csproj -- "Database\Sample\sample_rigs.xml"
 ```
 
 ---
@@ -199,6 +199,6 @@ Implementado el módulo **Estadísticas de datos** según SARRAS sección 8.0:
 
 **Archivo de prueba:** `Database\Sample\sample_trajectory.xml`
 ```powershell
-dotnet run --project .\BochazoEtpWitsml.csproj -- "Database\Sample\sample_trajectory.xml"
+dotnet run --project .\WitsmlODViewer.csproj -- "Database\Sample\sample_trajectory.xml"
 ```
 

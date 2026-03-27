@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>WitsmlODViewer</RootNamespace>
+    <AssemblyName>WitsmlODViewer</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="WitsmlODViewer.WinForms\**" />
+    <Compile Remove="WitsmlODViewer.DataAccess\**" />
+    <Compile Remove="WitsmlODViewer.Server\**" />
+    <None Remove="WitsmlODViewer.WinForms\**" />
+    <None Remove="WitsmlODViewer.DataAccess\**" />
+    <None Remove="WitsmlODViewer.Server\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.2" />
+  </ItemGroup>
+
+</Project>

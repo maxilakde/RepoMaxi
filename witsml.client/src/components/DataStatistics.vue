@@ -5,7 +5,7 @@
         <button class="btn btn-sm btn-outline-primary" @click="showVariablePane = !showVariablePane">
           {{ showVariablePane ? '▼' : '▶' }} Variables
         </button>
-        <span class="text-muted small">{{ rows.length }} fila(s)</span>
+        <span class="text-muted small">{{ totalRowCount }} fila(s) cargada(s)</span>
       </div>
       <div class="d-flex gap-2 align-items-center">
         <label class="small mb-0">Rango por:</label>
@@ -80,11 +80,38 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(row, ri) in sortedRows" :key="ri">
+              <tr v-for="(row, ri) in pagedRows" :key="pageRowKey(row, ri)">
                 <td v-for="col in columns" :key="col">{{ formatVal(row[col]) }}</td>
               </tr>
             </tbody>
           </table>
+        </div>
+        <!-- Paginación (siempre visible bajo el grid) -->
+        <div v-if="totalRowCount > 0" class="pagination-bar d-flex flex-wrap justify-content-between align-items-center gap-2">
+          <span class="small text-muted mb-0">
+            Mostrando <strong>{{ rangeStart }}</strong>–<strong>{{ rangeEnd }}</strong> de <strong>{{ totalRowCount }}</strong>
+          </span>
+          <div class="d-flex flex-wrap align-items-center gap-2">
+            <label class="small mb-0 d-flex align-items-center gap-1">
+              Filas por página
+              <select v-model.number="pageSize" class="form-select form-select-sm" style="width: auto; min-width: 5rem">
+                <option :value="10">10</option>
+                <option :value="25">25</option>
+                <option :value="50">50</option>
+                <option :value="100">100</option>
+                <option :value="0">Todas</option>
+              </select>
+            </label>
+            <div class="btn-group btn-group-sm" role="group">
+              <button type="button" class="btn btn-outline-secondary" :disabled="currentPage <= 1" @click="goToPage(1)" title="Primera página">«</button>
+              <button type="button" class="btn btn-outline-secondary" :disabled="currentPage <= 1" @click="goToPage(currentPage - 1)" title="Anterior">‹</button>
+            </div>
+            <span class="small text-nowrap">Página {{ currentPage }} / {{ totalPages }}</span>
+            <div class="btn-group btn-group-sm" role="group">
+              <button type="button" class="btn btn-outline-secondary" :disabled="currentPage >= totalPages" @click="goToPage(currentPage + 1)" title="Siguiente">›</button>
+              <button type="button" class="btn btn-outline-secondary" :disabled="currentPage >= totalPages" @click="goToPage(totalPages)" title="Última página">»</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -123,10 +150,35 @@ export default {
       maxTime: null,
       sortColumn: null,
       sortAsc: true,
-      activeStats: ['count', 'min', 'max']
+      activeStats: ['count', 'min', 'max'],
+      currentPage: 1,
+      pageSize: 25
     };
   },
   computed: {
+    totalRowCount() {
+      return this.sortedRows.length;
+    },
+    totalPages() {
+      if (this.totalRowCount === 0) return 1;
+      if (this.pageSize <= 0) return 1;
+      return Math.max(1, Math.ceil(this.totalRowCount / this.pageSize));
+    },
+    pagedRows() {
+      if (this.pageSize <= 0) return this.sortedRows;
+      const start = (this.currentPage - 1) * this.pageSize;
+      return this.sortedRows.slice(start, start + this.pageSize);
+    },
+    rangeStart() {
+      if (this.totalRowCount === 0) return 0;
+      if (this.pageSize <= 0) return 1;
+      return (this.currentPage - 1) * this.pageSize + 1;
+    },
+    rangeEnd() {
+      if (this.totalRowCount === 0) return 0;
+      if (this.pageSize <= 0) return this.totalRowCount;
+      return Math.min(this.currentPage * this.pageSize, this.totalRowCount);
+    },
     sortedRows() {
       if (!this.sortColumn) return this.rows;
       const col = this.sortColumn;
@@ -151,11 +203,33 @@ export default {
       }));
     }
   },
+  watch: {
+    pageSize() {
+      this.currentPage = 1;
+    },
+    totalRowCount(n, o) {
+      if (n !== o && this.currentPage > this.totalPages) {
+        this.currentPage = Math.max(1, this.totalPages);
+      }
+    }
+  },
   mounted() {
     this.loadVariables();
     this.loadData();
   },
   methods: {
+    goToPage(p) {
+      const last = this.totalPages;
+      const next = Math.min(Math.max(1, p), last);
+      this.currentPage = next;
+    },
+    pageRowKey(row, ri) {
+      const base = this.pageSize <= 0 ? 0 : (this.currentPage - 1) * this.pageSize;
+      const idx = base + ri;
+      const firstCol = this.columns[0];
+      const marker = firstCol != null && row[firstCol] != null ? String(row[firstCol]) : ri;
+      return `${idx}-${marker}`;
+    },
     async loadVariables() {
       try {
         const { data } = await api.get(`/wells/${this.wellUid}/statistics/variables`);
@@ -182,6 +256,7 @@ export default {
         const { data } = await api.post(`/wells/${this.wellUid}/statistics/data`, body);
         this.rows = data.rows;
         this.columns = data.columns;
+        this.currentPage = 1;
       } catch (e) {
         this.error = e.response?.data?.detail || e.message || 'Error al cargar datos';
         this.rows = [];
@@ -257,12 +332,24 @@ export default {
   border: 1px solid #dee2e6;
   border-radius: 4px;
 }
+.stats-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
 .summary-grid { flex-shrink: 0; }
 .data-grid-wrapper {
   flex: 1;
   min-height: 0;
   overflow: auto;
   -webkit-overflow-scrolling: touch;
+}
+.pagination-bar {
+  flex-shrink: 0;
+  padding: 0.4rem 0.5rem;
+  border-top: 1px solid #dee2e6;
+  background: #f8f9fa;
 }
 .data-grid-wrapper .table { margin-bottom: 0; }
 .sortable { cursor: pointer; user-select: none; }

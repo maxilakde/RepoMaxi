@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "122Ndl87Fyw=",
+  "dgSpecHash": "FfkVbyF4yso=",
   "success": true,
-  "projectFilePath": "C:\\TFS-CABL\\BochazoEtpWitsml\\BochazoEtpWitsml.csproj",
+  "projectFilePath": "C:\\TFS-CABL\\BochazoEtpWitsml\\WitsmlODViewer.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\maxim\\.nuget\\packages\\azure.core\\1.38.0\\azure.core.1.38.0.nupkg.sha512",
     "C:\\Users\\maxim\\.nuget\\packages\\azure.identity\\1.11.4\\azure.identity.1.11.4.nupkg.sha512",
