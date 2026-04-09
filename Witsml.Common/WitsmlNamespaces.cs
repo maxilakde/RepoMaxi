@@ -1,4 +1,4 @@
-namespace Cabl.Witsml.Common;
+namespace Witsml.Common;
 
 /// <summary>URIs de namespace WITSML usados para detección y documentación.</summary>
 public static class WitsmlNamespaces

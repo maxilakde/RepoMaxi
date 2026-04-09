@@ -1,6 +1,6 @@
 using System.Xml.Linq;
 
-namespace Cabl.Witsml.Common;
+namespace Witsml.Common;
 
 /// <summary>
 /// Detección ligera de versión WITSML (sin validar contra XSD).

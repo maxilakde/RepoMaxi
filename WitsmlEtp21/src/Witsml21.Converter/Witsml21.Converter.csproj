@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Cabl.Witsml.Common\Cabl.Witsml.Common.csproj" />
+    <ProjectReference Include="..\..\..\Witsml.Common\Witsml.Common.csproj" />
   </ItemGroup>
 
 </Project>

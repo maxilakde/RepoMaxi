@@ -7,7 +7,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{827E0CD3-B72
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Witsml21.Converter", "src\Witsml21.Converter\Witsml21.Converter.csproj", "{E834F40D-E867-4C87-8AD2-8FD6D47B909F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cabl.Witsml.Common", "..\Cabl.Witsml.Common\Cabl.Witsml.Common.csproj", "{C30D641C-B20B-49C1-8DCE-6BE6F2EA4A3D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Witsml.Common", "..\Witsml.Common\Witsml.Common.csproj", "{C30D641C-B20B-49C1-8DCE-6BE6F2EA4A3D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

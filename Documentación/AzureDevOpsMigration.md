@@ -22,7 +22,7 @@ Publicar este repositorio (**visor WITSML 1.4.1**) y el bootstrap **`WitsmlEtp21
 
 ## Librería COMMON
 
-Publicar **`Cabl.Witsml.Common`** como paquete NuGet interno (Azure Artifacts) o incluirla en el mismo repo y referenciarla por ruta relativa hasta estabilizar versiones.
+Publicar **`Witsml.Common`** como paquete NuGet interno (Azure Artifacts) o incluirla en el mismo repo y referenciarla por ruta relativa hasta estabilizar versiones.
 
 ## Bootstrap WitsmlEtp21
 

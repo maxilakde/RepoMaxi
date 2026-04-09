@@ -13,7 +13,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WitsmlODViewer.Server", "Wi
 EndProject
 Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "witsml.client", "witsml.client\witsml.client.esproj", "{17A6BF57-5494-4A16-B379-66CFBECF7A10}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cabl.Witsml.Common", "Cabl.Witsml.Common\Cabl.Witsml.Common.csproj", "{D98825C3-5AC0-4DA6-95A6-E9950F20251A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Witsml.Common", "Witsml.Common\Witsml.Common.csproj", "{D98825C3-5AC0-4DA6-95A6-E9950F20251A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

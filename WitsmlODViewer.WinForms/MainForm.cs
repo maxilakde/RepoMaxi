@@ -4,7 +4,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Cabl.Witsml.Common;
+using Witsml.Common;
 using WitsmlODViewer.Services;
 using WitsmlODViewer.Witsml141;
 

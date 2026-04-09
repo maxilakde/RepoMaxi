@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using Cabl.Witsml.Common;
+using Witsml.Common;
 
 namespace Witsml21.Converter
 {

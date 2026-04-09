@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Cabl.Witsml.Common;
+using Witsml.Common;
 
 namespace WitsmlODViewer.Services
 {

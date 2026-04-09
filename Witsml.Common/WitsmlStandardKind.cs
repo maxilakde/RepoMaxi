@@ -1,4 +1,4 @@
-namespace Cabl.Witsml.Common;
+namespace Witsml.Common;
 
 /// <summary>Clasificación superficial del estándar según namespace o atributo version del raíz.</summary>
 public enum WitsmlStandardKind

@@ -586,14 +586,14 @@
           "lib/netcoreapp2.1/_._": {}
         }
       },
-      "Cabl.Witsml.Common/1.0.0": {
+      "Witsml.Common/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v9.0",
         "compile": {
-          "bin/placeholder/Cabl.Witsml.Common.dll": {}
+          "bin/placeholder/Witsml.Common.dll": {}
         },
         "runtime": {
-          "bin/placeholder/Cabl.Witsml.Common.dll": {}
+          "bin/placeholder/Witsml.Common.dll": {}
         }
       }
     }
@@ -1690,16 +1690,16 @@
         "version.txt"
       ]
     },
-    "Cabl.Witsml.Common/1.0.0": {
+    "Witsml.Common/1.0.0": {
       "type": "project",
-      "path": "Cabl.Witsml.Common/Cabl.Witsml.Common.csproj",
-      "msbuildProject": "Cabl.Witsml.Common/Cabl.Witsml.Common.csproj"
+      "path": "Witsml.Common/Witsml.Common.csproj",
+      "msbuildProject": "Witsml.Common/Witsml.Common.csproj"
     }
   },
   "projectFileDependencyGroups": {
     "net9.0": [
-      "Cabl.Witsml.Common >= 1.0.0",
-      "Microsoft.Data.SqlClient >= 5.2.2"
+      "Microsoft.Data.SqlClient >= 5.2.2",
+      "Witsml.Common >= 1.0.0"
     ]
   },
   "packageFolders": {
@@ -1734,8 +1734,8 @@
         "net9.0": {
           "targetAlias": "net9.0",
           "projectReferences": {
-            "C:\\TFS-CABL\\BochazoEtpWitsml\\Cabl.Witsml.Common\\Cabl.Witsml.Common.csproj": {
-              "projectPath": "C:\\TFS-CABL\\BochazoEtpWitsml\\Cabl.Witsml.Common\\Cabl.Witsml.Common.csproj"
+            "c:\\TFS-CABL\\BochazoEtpWitsml\\Witsml.Common\\Witsml.Common.csproj": {
+              "projectPath": "c:\\TFS-CABL\\BochazoEtpWitsml\\Witsml.Common\\Witsml.Common.csproj"
             }
           }
         }

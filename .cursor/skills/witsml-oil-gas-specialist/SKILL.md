@@ -149,7 +149,7 @@ Usar esta skill cuando el usuario:
 Si el contexto es este repositorio:
 - **WitsmlRepository**: Persistencia SQL; métodos Save* por tipo de objeto; MERGE para wells, INSERT para hijos
 - **Witsml141Processor**: Procesa XML 1.4.1 con XDocument; namespace del root; GetVal() para elementos
-- **WitsmlConverter** (repo `WitsmlEtp21/src/Witsml21.Converter`): Convierte 1.4.1.1 → 2.1; namespaces vía `Cabl.Witsml.Common`
+- **WitsmlConverter** (repo `WitsmlEtp21/src/Witsml21.Converter`): Convierte 1.4.1.1 → 2.1; namespaces vía `Witsml.Common`
 - **Base de datos**: CreateWitsmlDatabase.sql; tablas en snake_case; source_file y processed_at en cada tabla
 - Soporta: wells, wellbores, trajectories, mud_logs, logs, rigs, tubulars, wb_geometrys, bha_runs, messages
 

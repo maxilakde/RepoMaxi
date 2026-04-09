@@ -13,7 +13,7 @@
     <Compile Remove="WitsmlODViewer.WinForms\**" />
     <Compile Remove="WitsmlODViewer.DataAccess\**" />
     <Compile Remove="WitsmlODViewer.Server\**" />
-    <Compile Remove="Cabl.Witsml.Common\**" />
+    <Compile Remove="Witsml.Common\**" />
     <Compile Remove="WitsmlEtp21\**" />
     <None Remove="WitsmlODViewer.WinForms\**" />
     <None Remove="WitsmlODViewer.DataAccess\**" />
@@ -25,7 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="Cabl.Witsml.Common\Cabl.Witsml.Common.csproj" />
+    <ProjectReference Include="Witsml.Common\Witsml.Common.csproj" />
   </ItemGroup>
 
 </Project>

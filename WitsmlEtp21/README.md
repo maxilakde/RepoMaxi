@@ -1,6 +1,6 @@
 # WITSML 2.1 / ETP — bootstrap de repositorio
 
-Este directorio agrupa el **punto de partida** para el producto **WITSML 2.1** (conversión 1.4→2.1, XSD, documentación de brechas) y la referencia a la librería compartida **`Cabl.Witsml.Common`**.
+Este directorio agrupa el **punto de partida** para el producto **WITSML 2.1** (conversión 1.4→2.1, XSD, documentación de brechas) y la referencia a la librería compartida **`Witsml.Common`**.
 
 ## Contenido
 
@@ -12,7 +12,7 @@ Este directorio agrupa el **punto de partida** para el producto **WITSML 2.1** (
 
 ## Migración a Git corporativo (Azure DevOps)
 
-Subir **este árbol** como repositorio nuevo en la organización de la empresa (no incluir el repo del visor 1.4.1 en el mismo remoto salvo que uséis monorepo). Copiar también el proyecto **`Cabl.Witsml.Common`** en la misma solución o publicarlo como NuGet interno.
+Subir **este árbol** como repositorio nuevo en la organización de la empresa (no incluir el repo del visor 1.4.1 en el mismo remoto salvo que uséis monorepo). Copiar también el proyecto **`Witsml.Common`** en la misma solución o publicarlo como NuGet interno.
 
 ## Compilar
 
@@ -22,7 +22,7 @@ Desde `WitsmlEtp21/`:
 dotnet build WitsmlEtp21.sln
 ```
 
-La referencia a `Cabl.Witsml.Common` es relativa a `../Cabl.Witsml.Common/`.
+La referencia a `Witsml.Common` es relativa a `../Witsml.Common/`.
 
 ## Próximos pasos de producto
 
