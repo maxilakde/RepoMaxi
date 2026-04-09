@@ -6,6 +6,11 @@ public class WellDTO
     public string? Name { get; set; }
     public string? TimeZone { get; set; }
     public string? StatusWell { get; set; }
+    public string? NumApi { get; set; }
+    public string? Country { get; set; }
+    public string? State { get; set; }
+    public string? Field { get; set; }
+    public string? Operator { get; set; }
     public DateTime? DTimCreation { get; set; }
     public DateTime? DTimLastChange { get; set; }
     public string? SourceFile { get; set; }

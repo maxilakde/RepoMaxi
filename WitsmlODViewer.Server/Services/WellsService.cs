@@ -6,9 +6,9 @@ namespace WitsmlODViewer.Server.Services;
 
 public class WellsService : IWellsService
 {
-    private readonly WitsmlDataContext _context;
+    private readonly Witsml141DataContext _context;
 
-    public WellsService(WitsmlDataContext context)
+    public WellsService(Witsml141DataContext context)
     {
         _context = context;
     }
@@ -31,6 +31,11 @@ public class WellsService : IWellsService
             Name = w.Name,
             TimeZone = w.TimeZone,
             StatusWell = w.StatusWell,
+            NumApi = w.NumApi,
+            Country = w.Country,
+            State = w.State,
+            Field = w.Field,
+            Operator = w.Operator,
             DTimCreation = w.DTimCreation,
             DTimLastChange = w.DTimLastChange,
             SourceFile = w.SourceFile,

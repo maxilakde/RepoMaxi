@@ -13,6 +13,8 @@
     <Compile Remove="WitsmlODViewer.WinForms\**" />
     <Compile Remove="WitsmlODViewer.DataAccess\**" />
     <Compile Remove="WitsmlODViewer.Server\**" />
+    <Compile Remove="Cabl.Witsml.Common\**" />
+    <Compile Remove="WitsmlEtp21\**" />
     <None Remove="WitsmlODViewer.WinForms\**" />
     <None Remove="WitsmlODViewer.DataAccess\**" />
     <None Remove="WitsmlODViewer.Server\**" />
@@ -20,6 +22,10 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="Cabl.Witsml.Common\Cabl.Witsml.Common.csproj" />
   </ItemGroup>
 
 </Project>

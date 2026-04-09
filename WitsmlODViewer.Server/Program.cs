@@ -18,14 +18,17 @@ builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo
     {
-        Title = "WitsmlODViewer API",
+        Title = "WitsmlODViewer API (WITSML 1.4.1)",
         Version = "v1"
     });
 });
 
 builder.Services.AddScoped<IWellsService, WellsService>();
 builder.Services.AddScoped<IStatisticsService, StatisticsService>();
-builder.Services.AddDbContext<WitsmlDataContext>(options =>
+builder.Services.Configure<AlarmEmailOptions>(builder.Configuration.GetSection(AlarmEmailOptions.SectionName));
+builder.Services.AddSingleton<IAlarmEmailSender, AlarmEmailSender>();
+builder.Services.AddScoped<IAlarmsService, AlarmsService>();
+builder.Services.AddDbContext<Witsml141DataContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("WitsmlData") ?? 
         "Server=.\\SQLExpress;Database=WitsmlData;Trusted_Connection=True;TrustServerCertificate=True;",
         sqlOptions => sqlOptions.EnableRetryOnFailure()));

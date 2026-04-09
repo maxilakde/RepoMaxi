@@ -585,6 +585,16 @@
         "runtime": {
           "lib/netcoreapp2.1/_._": {}
         }
+      },
+      "Cabl.Witsml.Common/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v9.0",
+        "compile": {
+          "bin/placeholder/Cabl.Witsml.Common.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Cabl.Witsml.Common.dll": {}
+        }
       }
     }
   },
@@ -1679,10 +1689,16 @@
         "useSharedDesignerContext.txt",
         "version.txt"
       ]
+    },
+    "Cabl.Witsml.Common/1.0.0": {
+      "type": "project",
+      "path": "Cabl.Witsml.Common/Cabl.Witsml.Common.csproj",
+      "msbuildProject": "Cabl.Witsml.Common/Cabl.Witsml.Common.csproj"
     }
   },
   "projectFileDependencyGroups": {
     "net9.0": [
+      "Cabl.Witsml.Common >= 1.0.0",
       "Microsoft.Data.SqlClient >= 5.2.2"
     ]
   },
@@ -1693,11 +1709,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\TFS-CABL\\BochazoEtpWitsml\\WitsmlODViewer.csproj",
+      "projectUniqueName": "c:\\TFS-CABL\\BochazoEtpWitsml\\WitsmlODViewer.csproj",
       "projectName": "WitsmlODViewer",
-      "projectPath": "C:\\TFS-CABL\\BochazoEtpWitsml\\WitsmlODViewer.csproj",
+      "projectPath": "c:\\TFS-CABL\\BochazoEtpWitsml\\WitsmlODViewer.csproj",
       "packagesPath": "C:\\Users\\maxim\\.nuget\\packages\\",
-      "outputPath": "C:\\TFS-CABL\\BochazoEtpWitsml\\obj\\",
+      "outputPath": "c:\\TFS-CABL\\BochazoEtpWitsml\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -1717,7 +1733,11 @@
       "frameworks": {
         "net9.0": {
           "targetAlias": "net9.0",
-          "projectReferences": {}
+          "projectReferences": {
+            "C:\\TFS-CABL\\BochazoEtpWitsml\\Cabl.Witsml.Common\\Cabl.Witsml.Common.csproj": {
+              "projectPath": "C:\\TFS-CABL\\BochazoEtpWitsml\\Cabl.Witsml.Common\\Cabl.Witsml.Common.csproj"
+            }
+          }
         }
       },
       "warningProperties": {

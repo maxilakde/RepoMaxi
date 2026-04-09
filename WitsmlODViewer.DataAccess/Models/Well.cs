@@ -23,6 +23,26 @@ public class Well
     [StringLength(50)]
     public string? StatusWell { get; set; }
 
+    [Column("num_api")]
+    [StringLength(100)]
+    public string? NumApi { get; set; }
+
+    [Column("country")]
+    [StringLength(100)]
+    public string? Country { get; set; }
+
+    [Column("state")]
+    [StringLength(100)]
+    public string? State { get; set; }
+
+    [Column("field")]
+    [StringLength(255)]
+    public string? Field { get; set; }
+
+    [Column("operator")]
+    [StringLength(255)]
+    public string? Operator { get; set; }
+
     [Column("d_tim_creation", TypeName = "datetime2")]
     public DateTime? DTimCreation { get; set; }
 

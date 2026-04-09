@@ -46,17 +46,21 @@
         <div class="tabs-body">
           <div v-for="tab in openTabs" :key="tab.id" v-show="activeTab === tab.id" class="tab-panel">
             <DataStatistics v-if="tab.component === 'DataStatistics'" :well-uid="wellUid || ''" />
+            <WellAlarms v-else-if="tab.component === 'WellAlarms'" :well-uid="wellUid || ''" />
             <PlaceholderContent v-else :message="tab.props?.message || 'Módulo en desarrollo.'" />
           </div>
         </div>
       </main>
     </div>
+    <AlarmNotifications v-if="wellUid" :well-uid="wellUid" />
   </div>
 </template>
 
 <script>
 import api from '../api';
 import DataStatistics from './DataStatistics.vue';
+import WellAlarms from './WellAlarms.vue';
+import AlarmNotifications from './AlarmNotifications.vue';
 
 const PlaceholderContent = {
   template: '<div class="p-4 text-muted"><p>{{ message }}</p></div>',
@@ -65,7 +69,7 @@ const PlaceholderContent = {
 
 export default {
   name: 'WellPage',
-  components: { PlaceholderContent, DataStatistics },
+  components: { PlaceholderContent, DataStatistics, WellAlarms, AlarmNotifications },
   data() {
     return {
       well: null,
@@ -97,14 +101,17 @@ export default {
     async loadWell() {
       const uid = this.$route.params.uid;
       if (!uid) return;
+      // El UID debe estar disponible de inmediato para pestañas que cargan en paralelo (p. ej. ?open=alarms).
+      // Si solo se asigna tras await /wells, WellAlarms pide /wells//alarms y la lista sale vacía o falla.
+      this.wellUid = uid;
+      this.wellName = uid;
       try {
         const { data } = await api.get('/wells');
         this.well = data.find(w => w.uid === uid) || null;
         this.wellName = this.well?.name || uid;
-        this.wellUid = uid;
       } catch {
+        this.well = null;
         this.wellName = uid;
-        this.wellUid = uid;
       }
     },
     addTab(id, title, component, props = {}, closable = true) {
@@ -129,7 +136,7 @@ export default {
         'data-analysis': ['data-analysis', 'Análisis de datos', 'Log Analysis, gráfico XY', 'placeholder'],
         surveys: ['surveys', 'Desvío', 'Informes de desvío', 'placeholder'],
         statistics: ['statistics', 'Estadísticas de datos', 'Variables, grid, estadísticas', 'DataStatistics'],
-        alarms: ['alarms', 'Alarmas', 'Módulo de alarmas', 'placeholder'],
+        alarms: ['alarms', 'Alarmas', 'Umbrales, historial y notificaciones', 'WellAlarms'],
         export: ['export', 'Exportar', 'Descarga de datos', 'placeholder'],
         'document-manager': ['document-manager', 'Gestor de documentos', 'Gestión de documentos', 'placeholder']
       };

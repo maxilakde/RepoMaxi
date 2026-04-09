@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Cabl.Witsml.Common;
 
 namespace WitsmlODViewer.Services
 {
@@ -13,7 +14,7 @@ namespace WitsmlODViewer.Services
     public class WitsmlFileCounter
     {
         /// <summary>
-        /// Carpeta donde se guardan archivos convertidos de 1.4.1.1 a 2.1. Se excluye del listado para evitar procesar duplicados.
+        /// Carpeta legada (conversiones antiguas a 2.1). Se excluye del listado si existe.
         /// </summary>
         public const string ConvertedFolderName = "converted_v2.1";
 
@@ -239,18 +240,15 @@ namespace WitsmlODViewer.Services
         private const int VersionCheckChunkSize = 8192;
 
         /// <summary>
-        /// Desglose de archivos por versión WITSML (1.4.1.1 vs 2.x).
-        /// Lee solo los primeros bytes de cada archivo para no bloquear con logs enormes.
+        /// Cuenta archivos WITSML 1.4.1 (1series) del tipo indicado; excluye 2.x.
         /// </summary>
-        public (int Count1411, int Count21) CountByContentWithVersionBreakdown(string objectType, CancellationToken cancellationToken = default)
+        public int CountWitsml141ByContent(string objectType, CancellationToken cancellationToken = default)
         {
             var expectedRoot = objectType.ToLowerInvariant();
             if (!ObjectTypeToFolder.ContainsKey(objectType))
-                return (0, 0);
+                return 0;
 
-            var count1411 = 0;
-            var count21 = 0;
-
+            var count = 0;
             foreach (var file in GetFilesForType(objectType, cancellationToken))
             {
                 cancellationToken.ThrowIfCancellationRequested();
@@ -259,15 +257,14 @@ namespace WitsmlODViewer.Services
                     var chunk = ReadFirstChunk(file, VersionCheckChunkSize);
                     if (!ContentMatchesRoot(chunk, expectedRoot))
                         continue;
-                    if (WitsmlConverter.IsWitsml21FromChunk(chunk))
-                        count21++;
-                    else
-                        count1411++;
+                    if (WitsmlXmlVersionDetector.IsWitsml21FromChunk(chunk))
+                        continue;
+                    count++;
                 }
                 catch { /* ignorar archivos corruptos */ }
             }
 
-            return (count1411, count21);
+            return count;
         }
 
         private static string ReadFirstChunk(string filePath, int size)

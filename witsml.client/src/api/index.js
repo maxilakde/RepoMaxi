@@ -5,4 +5,10 @@ const api = axios.create({
   headers: { 'Content-Type': 'application/json' }
 });
 
+api.interceptors.request.use((config) => {
+  const key = typeof localStorage !== 'undefined' ? (localStorage.getItem('witsmlSubscriberKey') || 'default') : 'default';
+  config.headers['X-Subscriber-Key'] = key;
+  return config;
+});
+
 export default api;

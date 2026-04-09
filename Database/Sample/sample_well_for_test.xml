@@ -4,6 +4,11 @@
     <name>Pozo Test Adjuntos y Markers</name>
     <timeZone>-03:00</timeZone>
     <statusWell>active</statusWell>
+    <numAPI>00-000-00000-0000</numAPI>
+    <country>NO</country>
+    <state>North Sea</state>
+    <field>Volve</field>
+    <operator>Equinor</operator>
     <commonData>
       <dTimCreation>2024-02-15T10:00:00Z</dTimCreation>
       <dTimLastChange>2024-02-27T09:00:00Z</dTimLastChange>

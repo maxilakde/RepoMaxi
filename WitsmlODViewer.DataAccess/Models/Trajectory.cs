@@ -19,4 +19,12 @@ public class Trajectory
     [Column("wellbore_uid")]
     [StringLength(100)]
     public string? WellboreUid { get; set; }
+
+    [Column("naming_system")]
+    [StringLength(100)]
+    public string? NamingSystem { get; set; }
+
+    [Column("definitive")]
+    [StringLength(20)]
+    public string? Definitive { get; set; }
 }

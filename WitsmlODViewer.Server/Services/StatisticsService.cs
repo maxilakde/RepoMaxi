@@ -5,7 +5,7 @@ namespace WitsmlODViewer.Server.Services;
 
 public class StatisticsService : IStatisticsService
 {
-    private readonly WitsmlDataContext _context;
+    private readonly Witsml141DataContext _context;
 
     private static readonly Dictionary<string, (string Caption, string Unit)> VariableMeta = new(StringComparer.OrdinalIgnoreCase)
     {
@@ -20,7 +20,7 @@ public class StatisticsService : IStatisticsService
         ["d_tim_stn"] = ("Fecha/Hora estación", ""),
     };
 
-    public StatisticsService(WitsmlDataContext context)
+    public StatisticsService(Witsml141DataContext context)
     {
         _context = context;
     }

@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\WitsmlODViewer.csproj" />
+    <ProjectReference Include="..\Cabl.Witsml.Common\Cabl.Witsml.Common.csproj" />
   </ItemGroup>
 
 </Project>

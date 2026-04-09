@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>Cabl.Witsml.Common</RootNamespace>
+    <AssemblyName>Cabl.Witsml.Common</AssemblyName>
+    <Description>Utilidades compartidas entre el visor WITSML 1.4.1 y el producto WITSML 2.1/ETP (sin parsers ni persistencia).</Description>
+  </PropertyGroup>
+
+</Project>

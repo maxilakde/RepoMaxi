@@ -4,7 +4,9 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Cabl.Witsml.Common;
 using WitsmlODViewer.Services;
+using WitsmlODViewer.Witsml141;
 
 namespace WitsmlODViewer.WinForms
 {
@@ -29,7 +31,7 @@ namespace WitsmlODViewer.WinForms
 
         private void InitializeComponents()
         {
-            Text = "WITSML - Procesador";
+            Text = "WITSML 1.4.1 — Procesador";
             Size = new Size(700, 520);
             MinimumSize = new Size(600, 450);
             StartPosition = FormStartPosition.CenterScreen;
@@ -96,7 +98,7 @@ namespace WitsmlODViewer.WinForms
 
             // Procesar
             mainPanel.Controls.Add(new Label { Text = "Acción:", AutoSize = true, Anchor = AnchorStyles.Left }, 0, row);
-            _btnProcess = new Button { Text = "Convertir y cargar en BD", AutoSize = true };
+            _btnProcess = new Button { Text = "Cargar en BD (1.4.1)", AutoSize = true };
             _btnProcess.Click += BtnProcess_Click;
             mainPanel.Controls.Add(_btnProcess, 1, row);
             row++;
@@ -155,12 +157,9 @@ namespace WitsmlODViewer.WinForms
             try
             {
                 var counter = new WitsmlFileCounter(basePath);
-                var (count1411, count21) = await Task.Run(() => counter.CountByContentWithVersionBreakdown(item.Key), CancellationToken.None);
-                var total = count1411 + count21;
-                _lblCount.Text = total > 0
-                    ? $"{total:N0}  (1.4.1.1: {count1411:N0}  ·  2.1: {count21:N0})"
-                    : "0";
-                Log($"Tipo: {item.Display} → {count1411:N0} en 1.4.1.1, {count21:N0} en 2.1. Total: {total:N0}");
+                var count141 = await Task.Run(() => counter.CountWitsml141ByContent(item.Key), CancellationToken.None);
+                _lblCount.Text = count141 > 0 ? $"{count141:N0} (1.4.1)" : "0";
+                Log($"Tipo: {item.Display} → {count141:N0} archivo(s) WITSML 1.4.1 (2.x excluidos).");
             }
             catch (Exception ex)
             {
@@ -208,47 +207,25 @@ namespace WitsmlODViewer.WinForms
                 _progressBar.Maximum = total;
                 _progressBar.Value = 0;
 
-                var converter = new WitsmlConverter();
-                var processor = new WitsmlProcessor();
-                var outputDir = Path.Combine(basePath, "converted_v2.1");
+                var processor = new Witsml141Processor();
                 var processed = 0;
                 var errors = 0;
+                var skipped21 = 0;
 
                 foreach (var file in files)
                 {
                     try
                     {
                         var xmlContent = await File.ReadAllTextAsync(file);
-                        string pathToProcess;
-
-                        if (WitsmlConverter.IsWitsml21(xmlContent))
+                        if (WitsmlXmlVersionDetector.IsWitsml21(xmlContent))
                         {
-                            // Ya es 2.1: procesar directamente sin convertir ni duplicar
-                            pathToProcess = file;
-                        }
-                        else
-                        {
-                            var relPath = Path.GetRelativePath(basePath, file);
-                            var outPath = Path.Combine(outputDir, Path.ChangeExtension(relPath, ".xml"));
-
-                            if (File.Exists(outPath) && File.GetLastWriteTimeUtc(outPath) >= File.GetLastWriteTimeUtc(file))
-                            {
-                                // Ya convertido y actualizado: usar el existente sin reconvertir
-                                pathToProcess = outPath;
-                            }
-                            else
-                            {
-                                var convertedXml = converter.ConvertXml(xmlContent);
-                                var outDir = Path.GetDirectoryName(outPath);
-                                if (!string.IsNullOrEmpty(outDir))
-                                    Directory.CreateDirectory(outDir);
-                                await File.WriteAllTextAsync(outPath, convertedXml);
-                                pathToProcess = outPath;
-                            }
+                            skipped21++;
+                            Log($"  ⊘ {Path.GetFileName(file)}: WITSML 2.x omitido (usar producto ETP/2.1).");
+                            continue;
                         }
 
-                        using var repo = new WitsmlRepository(connStr);
-                        await processor.ProcessWitsmlFileAsync(pathToProcess, repo);
+                        using var repo = new Witsml141Repository(connStr);
+                        await processor.ProcessWitsmlFileAsync(file, repo);
                         processed++;
                     }
                     catch (Exception ex)
@@ -260,8 +237,8 @@ namespace WitsmlODViewer.WinForms
                     _progressBar.Value = processed + errors;
                 }
 
-                Log($"✓ Completado: {processed} archivo(s) procesado(s), {errors} error(es).");
-                MessageBox.Show($"{total} archivo(s) encontrado(s).\nProcesados: {processed}\nErrores: {errors}", "Resultado", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Log($"✓ Completado: {processed} archivo(s) procesado(s), {skipped21} omitido(s) (2.x), {errors} error(es).");
+                MessageBox.Show($"{total} archivo(s) encontrado(s).\nProcesados (1.4.1): {processed}\nOmitidos (2.x): {skipped21}\nErrores: {errors}", "Resultado", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
